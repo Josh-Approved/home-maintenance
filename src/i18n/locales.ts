@@ -11,7 +11,7 @@
  *
  * To translate this app's domain strings (canon § Translations, P7):
  *   1. node scripts/translate.mjs --strings <app>      # scaffolds locale skeletons from APP_STRINGS
- *   2. Claude fills each src/i18n/<locale>.ts with the domain translations.
+ *   2. Fill each src/i18n/<locale>.ts with the domain translations.
  *   3. DEEP-merge them onto each shell entry below, e.g.:
  *        import es from './es';
  *        export const LOCALES = { es: deepMerge(SHELL_LOCALES.es, es), ... };
@@ -26,10 +26,35 @@
  */
 
 import { SHELL_LOCALES } from './shellLocales';
+import es from './es';
+import de from './de';
+import fr from './fr';
+import it from './it';
+import ptBR from './pt-BR';
+import ja from './ja';
 
 type Dict = { [key: string]: string | Dict };
 
-// Default: shell chrome localized, no domain strings yet. The translate workflow
-// rewrites this map to merge per-app domain dicts on top of each SHELL_LOCALES
-// entry (see the header). Shape: { [locale]: Dict }.
-export const LOCALES: Record<string, Dict> = { ...(SHELL_LOCALES as Record<string, Dict>) };
+function deepMerge(base: Dict, extra: Dict): Dict {
+  const out: Dict = { ...base };
+  for (const [k, v] of Object.entries(extra)) {
+    const cur = out[k];
+    if (v && typeof v === 'object' && cur && typeof cur === 'object') {
+      out[k] = deepMerge(cur as Dict, v as Dict);
+    } else {
+      out[k] = v;
+    }
+  }
+  return out;
+}
+
+const S = SHELL_LOCALES as unknown as Record<string, Dict>;
+
+export const LOCALES: Record<string, Dict> = {
+  es: deepMerge(S.es, es as unknown as Dict),
+  de: deepMerge(S.de, de as unknown as Dict),
+  fr: deepMerge(S.fr, fr as unknown as Dict),
+  it: deepMerge(S.it, it as unknown as Dict),
+  'pt-BR': deepMerge(S['pt-BR'], ptBR as unknown as Dict),
+  ja: deepMerge(S.ja, ja as unknown as Dict),
+};

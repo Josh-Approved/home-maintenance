@@ -1,0 +1,80 @@
+{
+  "stores": {
+    "ios": [
+      {
+        "id": "core",
+        "source": "ios/due.png",
+        "caption": "The house's to-do list, kept for you."
+      },
+      {
+        "id": "josh-approved",
+        "kind": "card"
+      },
+      {
+        "id": "manual",
+        "source": "ios/appliance-detail.png",
+        "caption": "Your appliance's manual, one tap away."
+      },
+      {
+        "id": "library",
+        "source": "ios/library.png",
+        "caption": "Start with the common tasks, in a couple of taps."
+      },
+      {
+        "id": "appliances",
+        "source": "ios/appliances.png",
+        "caption": "Every appliance's details in one place."
+      }
+    ],
+    "ipad": [
+      {
+        "id": "core",
+        "source": "ipad/due.png",
+        "caption": "The house's to-do list, kept for you."
+      },
+      {
+        "id": "josh-approved",
+        "kind": "card"
+      },
+      {
+        "id": "manual",
+        "source": "ipad/appliance-detail.png",
+        "caption": "Your appliance's manual, one tap away."
+      },
+      {
+        "id": "library",
+        "source": "ipad/library.png",
+        "caption": "Start with the common tasks, in a couple of taps."
+      }
+    ],
+    "android": [
+      {
+        "id": "core",
+        "source": "android/due.png",
+        "caption": "The house's to-do list, kept for you."
+      },
+      {
+        "id": "josh-approved",
+        "kind": "card"
+      },
+      {
+        "id": "manual",
+        "source": "android/appliance-detail.png",
+        "caption": "Your appliance's manual, one tap away."
+      },
+      {
+        "id": "library",
+        "source": "android/library.png",
+        "caption": "Start with the common tasks, in a couple of taps."
+      },
+      {
+        "id": "appliances",
+        "source": "android/appliances.png",
+        "caption": "Every appliance's details in one place."
+      }
+    ]
+  },
+  "style": "signature",
+  "motif": "lines",
+  "ground": "#7B5B44"
+}

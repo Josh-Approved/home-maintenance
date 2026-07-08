@@ -1,0 +1,8 @@
+{
+  "hash": "92fee8fda6e43913407112a7508214b0a545631114733ffad83a1055f87a8ad4",
+  "inputs": [
+    "assets/icon.svg",
+    "qa/feature-graphic.json",
+    "templates/feature-graphic/feature-graphic.html"
+  ]
+}
