@@ -84,6 +84,8 @@ export const APP_STRINGS = {
     markDoneOn: 'Mark done',
     lastDoneQuestion: 'When was this last done?',
     lastDoneSkip: 'Not sure',
+    lastDoneToday: 'Today',
+    lastDoneAgo: 'A while back (already due)',
   },
   appliances: {
     title: 'Appliances',

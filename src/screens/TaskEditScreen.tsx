@@ -14,7 +14,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../App';
 import { useTasksStore } from '../store/tasks';
 import { useAppliancesStore } from '../store/appliances';
-import { completionsFor, clampIntervalDays } from '../data/task';
+import { completionsFor, clampIntervalDays, DAY } from '../data/task';
 import { activeAppliances } from '../data/appliance';
 import { CATEGORIES, type CategoryId } from '../data/library';
 import { ensureNotificationPermission } from '../lib/reminders';
@@ -60,6 +60,7 @@ export default function TaskEditScreen({ navigation, route }: Props) {
   const addTask = useTasksStore((st) => st.addTask);
   const updateTask = useTasksStore((st) => st.updateTask);
   const deleteTask = useTasksStore((st) => st.deleteTask);
+  const markDone = useTasksStore((st) => st.markDone);
   const appliances = useAppliancesStore((st) => st.appliances);
 
   const existing = taskId ? tasks.find((task) => task.id === taskId) : undefined;
@@ -74,6 +75,10 @@ export default function TaskEditScreen({ navigation, route }: Props) {
   );
   const [reminder, setReminder] = useState(existing?.reminder ?? true);
   const [note, setNote] = useState(existing?.note ?? '');
+  // New tasks only: when was this last done? 'unknown' anchors now (due in one
+  // interval); 'today' records a completion; 'ago' anchors one interval back so
+  // the task starts due today (the add-an-already-overdue-task case).
+  const [lastDone, setLastDone] = useState<'unknown' | 'today' | 'ago'>('unknown');
 
   const count = parseInt(countText, 10);
   const valid = name.trim().length > 0 && Number.isFinite(count) && count > 0;
@@ -99,8 +104,13 @@ export default function TaskEditScreen({ navigation, route }: Props) {
       reminder,
       note: note || undefined,
     };
-    if (existing) updateTask(existing.id, fields);
-    else addTask(fields);
+    if (existing) {
+      updateTask(existing.id, fields);
+    } else {
+      const anchorAt = lastDone === 'ago' ? Date.now() - intervalDays * DAY : undefined;
+      const id = addTask({ ...fields, anchorAt });
+      if (lastDone === 'today') markDone(id);
+    }
     navigation.goBack();
   };
 
@@ -204,6 +214,36 @@ export default function TaskEditScreen({ navigation, route }: Props) {
             ))}
           </View>
         </View>
+
+        {!existing ? (
+          <>
+            <Text style={s.label}>{t('edit.lastDoneQuestion')}</Text>
+            <View style={s.chipWrap}>
+              {([
+                ['unknown', 'edit.lastDoneSkip'],
+                ['today', 'edit.lastDoneToday'],
+                ['ago', 'edit.lastDoneAgo'],
+              ] as const).map(([key, labelKey]) => (
+                <Pressable
+                  key={key}
+                  onPress={() => setLastDone(key)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: lastDone === key }}
+                  accessibilityLabel={t(labelKey)}
+                  style={({ pressed }) => [
+                    s.chip,
+                    lastDone === key && s.chipSelected,
+                    pressed && s.pressed,
+                  ]}
+                >
+                  <Text style={[s.chipText, lastDone === key && s.chipTextSelected]}>
+                    {t(labelKey)}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </>
+        ) : null}
 
         {linkableAppliances.length > 0 ? (
           <>
