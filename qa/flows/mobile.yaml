@@ -35,6 +35,9 @@ appId: com.joshapproved.homemaintenance
 - extendedWaitUntil:
     visible: { text: "Common tasks" }
     timeout: 10000
+- scrollUntilVisible:
+    element: { text: ".*Test sump pump.*" }
+    direction: DOWN
 - tapOn: { text: ".*Test sump pump.*" }
 - takeScreenshot: qa/captures/${STORE}/library
 - tapOn: { text: "Add 1" }

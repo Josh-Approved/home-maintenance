@@ -5,37 +5,100 @@
   "diagnosticLaunchShot": true,
   "settleMs": 8000,
   "steps": [
-    { "waitFor": "@due-title", "timeout": 30000 },
-    { "waitFor": "@overdue-section", "timeout": 15000 },
-    { "assert": "@overdue-task" },
-    { "screenshot": "due" },
-
-    { "assertNot": "@done-toast" },
-    { "tap": "@done-overdue" },
-    { "assert": "@done-toast" },
-
-    { "tap": "@tasks-tab" },
-    { "waitFor": "@add-task-fab", "timeout": 10000 },
-    { "assertNot": "@added-task" },
-    { "screenshot": "tasks" },
-    { "tap": "@add-task-fab" },
-    { "waitFor": "@library-title", "timeout": 10000 },
-    { "tap": "@library-sump" },
-    { "screenshot": "library" },
-    { "tap": "@library-add-one" },
-    { "waitFor": "@add-task-fab", "timeout": 10000 },
-    { "assert": "@added-task" },
-
-    { "tap": "@appliances-tab" },
-    { "waitFor": "@appliance-fridge", "timeout": 10000 },
-    { "screenshot": "appliances" },
-    { "tap": "@appliance-fridge" },
-    { "waitFor": "@find-manual", "timeout": 10000 },
-    { "screenshot": "appliance-detail" },
-    { "tap": "@appliance-back" },
-
-    { "tap": "@me-tab" },
-    { "waitFor": "@settings-title", "timeout": 10000 },
-    { "screenshot": "settings" }
+    {
+      "waitFor": "@due-title",
+      "timeout": 30000
+    },
+    {
+      "waitFor": "@overdue-section",
+      "timeout": 15000
+    },
+    {
+      "assert": "@overdue-task"
+    },
+    {
+      "screenshot": "due"
+    },
+    {
+      "assertNot": "@done-toast"
+    },
+    {
+      "tap": "@done-overdue"
+    },
+    {
+      "assert": "@done-toast"
+    },
+    {
+      "tap": "@tasks-tab"
+    },
+    {
+      "waitFor": "@add-task-fab",
+      "timeout": 10000
+    },
+    {
+      "assertNot": "@added-task"
+    },
+    {
+      "screenshot": "tasks"
+    },
+    {
+      "tap": "@add-task-fab"
+    },
+    {
+      "waitFor": "@library-title",
+      "timeout": 10000
+    },
+    {
+      "scrollUntilVisible": "@library-sump"
+    },
+    {
+      "tap": "@library-sump"
+    },
+    {
+      "screenshot": "library"
+    },
+    {
+      "tap": "@library-add-one"
+    },
+    {
+      "waitFor": "@add-task-fab",
+      "timeout": 10000
+    },
+    {
+      "assert": "@added-task"
+    },
+    {
+      "tap": "@appliances-tab"
+    },
+    {
+      "waitFor": "@appliance-fridge",
+      "timeout": 10000
+    },
+    {
+      "screenshot": "appliances"
+    },
+    {
+      "tap": "@appliance-fridge"
+    },
+    {
+      "waitFor": "@find-manual",
+      "timeout": 10000
+    },
+    {
+      "screenshot": "appliance-detail"
+    },
+    {
+      "tap": "@appliance-back"
+    },
+    {
+      "tap": "@me-tab"
+    },
+    {
+      "waitFor": "@settings-title",
+      "timeout": 10000
+    },
+    {
+      "screenshot": "settings"
+    }
   ]
 }
