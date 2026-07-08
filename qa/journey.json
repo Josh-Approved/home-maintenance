@@ -1,0 +1,21 @@
+{
+  "$comment": "tracker-archetype screenshot traversal + Tier-2 outcome assertion. Generates qa/flows/mobile.yaml (scripts/qa/compile-flow.mjs); never hand-edit the yaml. Anchors live in qa/selectors.json and target the seeded entries (src/qa/fixtures.ts). The core action pinned here is LOGGING an entry: a noted entry is absent on the home list before save and present after (assertNot -> add -> save -> assert), proving the write + summary refresh landed.",
+  "appId": "com.joshapproved.homemaintenance",
+  "clearState": true,
+  "diagnosticLaunchShot": true,
+  "settleMs": 8000,
+  "steps": [
+    { "waitFor": "@home-title", "timeout": 30000 },
+    { "waitFor": "@today-card", "timeout": 15000 },
+    { "screenshot": "home" },
+
+    { "assertNot": "@added-entry" },
+    { "tap": "@add-button" },
+    { "waitFor": "@note-input", "timeout": 10000 },
+    { "screenshot": "add" },
+    { "tap": "@note-input" },
+    { "type": "Espresso" },
+    { "tap": "@save-button" },
+    { "assert": "@added-entry" }
+  ]
+}

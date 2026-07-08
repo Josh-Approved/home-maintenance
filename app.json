@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Home Maintenance",
+    "slug": "home-maintenance",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.joshapproved.homemaintenance",
+      "infoPlist": {
+        "CFBundleName": "Home Maintenance"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.joshapproved.homemaintenance"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "owner": "josh-approved",
+    "plugins": [
+      "./plugins/withGradleJvmArgs",
+      "expo-sqlite",
+      "expo-sharing",
+      "expo-splash-screen",
+      "expo-status-bar",
+      "expo-font"
+    ]
+  }
+}

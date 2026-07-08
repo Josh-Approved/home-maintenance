@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Josh Approved — Screenshot Frame</title>
+<style>
+  /* Tokens — kept inline so this file renders standalone via file:// without
+     resolving sibling CSS. Mirrors josh-approved-design-system/colors_and_type.css. */
+  :root {
+    --paper: #FAFAF7;
+    --ink-1000: #0E0E0F;
+    --ink-700: #3D3D42;
+    --ink-500: #6B6B72;
+    --ink-200: #C8C8CC;
+    --ink-100: #E5E5E2;
+    --green-600: #1F8A4C;
+    /* Defaults overridden by the script from query params (accent/style/theme). */
+    --ac: #6E4A63;
+    --device-shadow: none;
+    --motif: none;
+    --kl-w: 0; --kl-h: 0; --kl-mt: 0;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+
+  /* Theme = light|dark. In `flat` style --bg is a solid; richer styles overwrite
+     --bg with a gradient (+ motif) from the script. --fg/--bezel always follow
+     the theme so captions + device chrome stay legible on whatever ground. */
+  body[data-theme="light"] { --bg: var(--paper);    --fg: var(--ink-1000); --bezel: var(--ink-1000); }
+  body[data-theme="dark"]  { --bg: var(--ink-1000); --fg: var(--paper);    --bezel: var(--paper);    }
+
+  .stage {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    /* caption · keyline · frame. The keyline row collapses to 0 unless the
+       editorial style turns it on. The frame row STRETCHES so #frame gets a
+       definite height to bound the device against (without the stretch a
+       capture-tall device overflows and its bottom bezel bleeds off-canvas). */
+    grid-template-rows: auto auto 1fr;
+    justify-items: center;
+    align-items: stretch;
+    padding: var(--pad-y) var(--pad-x);
+    gap: var(--gap);
+  }
+
+  .caption {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-align: center;
+    line-height: 1.15;
+    max-width: 90%;
+    align-self: center;
+  }
+
+  /* Editorial: caption sits left with an accent keyline beneath it. */
+  body[data-style="editorial"] .caption { text-align: left; justify-self: start; align-self: start; max-width: 100%; }
+  .keyline { width: var(--kl-w); height: var(--kl-h); margin-top: var(--kl-mt); background: var(--ac); border-radius: 999px; justify-self: start; align-self: start; }
+
+  /* The frame row's stretched cell — centers the device/window/card and gives it
+     a definite box to shrink-to-fit within (height + width). */
+  #frame {
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    display: grid;
+    place-items: center;
+  }
+
+  .device {
+    background: var(--bezel);
+    border-radius: var(--bezel-radius);
+    padding: var(--bezel-thickness);
+    display: grid;
+    place-items: center;
+    /* Shrink-to-fit BOTH axes (mirrors .window): width:100% + height:auto sizes
+       height from the aspect ratio; when that would exceed the cell, max-height
+       clamps and aspect-ratio pulls width back in. */
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--device-aspect);
+    max-height: 100%;
+    max-width: 100%;
+  }
+  /* Float the device on every style except flat (flat = the original look). */
+  body:not([data-style="flat"]) .device { box-shadow: var(--device-shadow); }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--screen-radius);
+    overflow: hidden;
+    background: var(--paper);
+    display: block;
+    background-repeat: no-repeat;
+  }
+  .screen img {
+    width: 100%;
+    height: 100%;
+    /* contain, never cover — the WHOLE capture must show. A cover-crop silently
+       eats whatever sits at the screen edges, and bottom-anchored CTAs (the "+"
+       FAB, a sticky Save bar) are exactly what gets lost. */
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Browser-window chrome (Chrome surface only) */
+  .window {
+    background: var(--paper);
+    border: 1px solid var(--ink-100);
+    border-radius: 12px;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 36px 1fr;
+    width: 100%;
+    aspect-ratio: var(--window-aspect);
+    max-height: 100%;
+  }
+  .window .titlebar { background: var(--ink-100); display: flex; align-items: center; padding: 0 12px; gap: 6px; }
+  .window .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--ink-200); }
+  .window .urlbar { flex: 1; margin-left: 12px; height: 22px; background: var(--paper); border: 1px solid var(--ink-200); border-radius: 6px; }
+  .window .body { background: var(--paper); display: grid; place-items: center; overflow: hidden; }
+  .window .body img { max-width: 90%; max-height: 90%; object-fit: contain; display: block; }
+
+  /* ---------- Surface-specific layout ---------- */
+
+  body[data-surface="iphone"] {
+    --pad-x: 96px; --pad-y: 96px; --gap: 56px;
+    --bezel-thickness: 14px;
+    --bezel-radius: 96px;
+    --screen-radius: 84px;
+    --device-aspect: 1320 / 2868;
+  }
+  body[data-surface="iphone"] .caption { font-size: 88px; }
+  body[data-surface="iphone"][data-style="editorial"] .caption { font-size: 96px; }
+
+  body[data-surface="ipad"] {
+    --pad-x: 144px; --pad-y: 144px; --gap: 72px;
+    --bezel-thickness: 18px;
+    --bezel-radius: 56px;
+    --screen-radius: 40px;
+    --device-aspect: 2064 / 2752;
+  }
+  body[data-surface="ipad"] .caption { font-size: 96px; }
+  body[data-surface="ipad"][data-style="editorial"] .caption { font-size: 104px; }
+
+  body[data-surface="android"] {
+    --pad-x: 72px; --pad-y: 72px; --gap: 44px;
+    --bezel-thickness: 12px;
+    --bezel-radius: 64px;
+    --screen-radius: 52px;
+    --device-aspect: 1080 / 2400;
+  }
+  body[data-surface="android"] .caption { font-size: 72px; }
+  body[data-surface="android"][data-style="editorial"] .caption { font-size: 80px; }
+
+  body[data-surface="android-tablet"] {
+    --pad-x: 120px; --pad-y: 120px; --gap: 56px;
+    --bezel-thickness: 16px;
+    --bezel-radius: 48px;
+    --screen-radius: 32px;
+    --device-aspect: 1600 / 2560;
+  }
+  body[data-surface="android-tablet"] .caption { font-size: 84px; }
+  body[data-surface="android-tablet"][data-style="editorial"] .caption { font-size: 92px; }
+
+  body[data-surface="chrome"] {
+    --pad-x: 80px; --pad-y: 64px; --gap: 32px;
+    --window-aspect: 1280 / 600;
+  }
+  body[data-surface="chrome"] .caption { font-size: 36px; }
+
+  /* ---------- Josh Approved card (slot 2 of every listing) ----------
+     Generated card, identical across every app. No app screen, no device chrome.
+     In `flat` it's the original Paper/Ink card; richer styles let it inherit the
+     branded ground (accent gradient + motif) computed by the script, with the
+     content lifted onto a floating Paper panel. Green checks ALWAYS stay green —
+     approval green keeps its semantic meaning and is never replaced by accent. */
+  body[data-surface="josh-card"] .stage { display: block; padding: 0; }
+  body[data-surface="josh-card"] .caption, body[data-surface="josh-card"] .keyline { display: none; }
+  .josh-card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding: 0 6vmin 6vmin; }
+  .josh-card__panel {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 7vmin; width: 100%;
+  }
+  /* On a branded ground, set the content on a soft floating paper panel. */
+  body[data-surface="josh-card"]:not([data-style="flat"]) .josh-card { padding: 8vmin 6vmin; }
+  body[data-surface="josh-card"]:not([data-style="flat"]) .josh-card__panel {
+    background: var(--panel, var(--paper));
+    border-radius: 6vmin;
+    box-shadow: var(--device-shadow);
+    flex: 1; width: 100%; margin: 2vmin 0;
+  }
+  .josh-card__main { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7vmin; width: 100%; flex: 1; }
+  .josh-card__title { font-weight: 600; font-size: 8.5vmin; line-height: 1.1; letter-spacing: -0.02em; text-align: center; color: var(--card-fg, var(--fg)); }
+  .josh-card__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4.5vmin; font-weight: 500; font-size: 7vmin; letter-spacing: -0.01em; color: var(--card-fg, var(--fg)); }
+  .josh-card__item { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 3.5vmin; }
+  .josh-card__check { color: var(--green-600); font-weight: 700; font-size: 7.5vmin; line-height: 1; }
+  .josh-card__wordmark { display: flex; align-items: center; gap: 1.4vmin; font-weight: 600; font-size: 3.2vmin; letter-spacing: -0.0375em; color: var(--card-fg, var(--fg)); padding-bottom: 1vmin; }
+  .josh-card__wordmark-check { width: 3vmin; height: 3vmin; color: var(--green-600); flex-shrink: 0; }
+
+  /* ---------- Video-frame mode (demo GIFs) ----------
+     A DEMO GIF can't be a single Chrome screenshot, so demo-capture.mjs composites
+     a recorded video into a device frame with ffmpeg. This engine renders the two
+     STATIC plates it needs, sharing the exact signature look (marketing ground,
+     accent shadow, bezel radii) as the still-screenshot frames above:
+       vmode=back  → the ground + accent drop-shadow the device floats on (opaque).
+       vmode=front → the device bezel as an SVG with a TRUE transparent screen hole
+                     (even-odd fill) + the caption, on a transparent canvas.
+     ffmpeg layers: back → scaled video at the screen rect → front. The front's
+     rounded hole masks the video's square corners, so the screen reads as a real,
+     rounded phone display. All geometry is computed in Node and passed as px. */
+  body[data-vmode] .stage { display: none; }
+  body[data-vmode="front"] { background: transparent !important; }
+  .vsvg { position: absolute; inset: 0; }
+  .vshadow { position: absolute; background: transparent; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="caption" id="caption"></div>
+    <div class="keyline" id="keyline"></div>
+    <div id="frame"></div>
+  </div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const surface = params.get('surface') || 'iphone';
+  const screen  = params.get('screen')  || '';
+  const caption = params.get('caption') || '';
+  // Back-compat: old callers pass bg=paper|ink. New callers pass theme=light|dark.
+  const bg      = params.get('bg') || 'paper';
+  const theme   = params.get('theme') || (bg === 'ink' ? 'dark' : 'light');
+  const style   = params.get('style') || 'flat';
+  const layout  = params.get('layout') || 'hero';
+  const motif   = params.get('motif') || 'none';
+  const accent  = params.get('accent') || '';
+  const crop    = (params.get('crop') || '').split(',').map(Number).filter((n) => !Number.isNaN(n));
+  const vmode   = params.get('vmode') || '';   // '' | 'back' | 'front' — video-frame plates
+
+  if (vmode) document.body.dataset.vmode = vmode;
+  document.body.dataset.surface = surface;
+  document.body.dataset.theme = theme;
+  document.body.dataset.style = style;
+  document.body.dataset.layout = layout;
+  document.body.dataset.motif = motif;
+  document.getElementById('caption').textContent = caption;
+
+  // ---------- colour helpers (zero-dep, deterministic) ----------
+  const PAPER = [250, 250, 247];
+  const INK   = [14, 14, 15];
+  function toRgb(h) {
+    h = (h || '').replace('#', '');
+    if (h.length !== 6) return null;
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  }
+  function mix(a, b, t) { return a.map((v, i) => Math.round(v + (b[i] - v) * t)); } // t: 0=a … 1=b
+  function css(a, alpha) { return alpha == null ? `rgb(${a[0]},${a[1]},${a[2]})` : `rgba(${a[0]},${a[1]},${a[2]},${alpha})`; }
+
+  const ac = toRgb(accent) || toRgb('#6E4A63');
+  document.documentElement.style.setProperty('--ac', css(ac));
+
+  // Background per (style, theme). flat keeps the solid --bg from the theme rule.
+  // canvas/signature = a calm 2-stop accent gradient; signature adds a faint motif
+  // tinted from the accent. editorial = a near-paper accent whisper (the drama is
+  // typographic, not chromatic). Motif sits ON TOP of the gradient (first layer).
+  function groundGradient() {
+    if (theme === 'dark') {
+      const top = mix(ac, INK, 0.80), bot = mix(ac, INK, 0.60);
+      return `linear-gradient(180deg, ${css(top)}, ${css(bot)})`;
+    }
+    if (style === 'editorial') {
+      return css(mix(ac, PAPER, 0.93)); // solid whisper of accent
+    }
+    // signature/canvas light: a clearly-coloured marketing ground (NOT a near-paper
+    // whisper — that read as cream). Soft top → more saturated bottom so the floating
+    // device still reads as the hero. Marketing palette only (see render-screenshots).
+    const top = mix(ac, PAPER, 0.72), bot = mix(ac, PAPER, 0.46);
+    return `linear-gradient(180deg, ${css(top)}, ${css(bot)})`;
+  }
+  function motifLayer() {
+    if (motif === 'none' || style === 'flat') return '';
+    const w = window.innerWidth || 1320;
+    const sp = Math.round(w / 15);                       // pattern pitch scales with surface
+    const tint = theme === 'dark' ? css(mix(ac, PAPER, 0.45), 0.10) : css(mix(ac, INK, 0.10), 0.10);
+    if (motif === 'dots') {
+      const r = Math.max(4, Math.round(sp * 0.085));
+      return `radial-gradient(circle, ${tint} ${r}px, transparent ${r + 1}px) 0 0 / ${sp}px ${sp}px`;
+    }
+    if (motif === 'lines') {
+      return `repeating-linear-gradient(180deg, ${tint} 0 2px, transparent 2px ${sp}px)`;
+    }
+    if (motif === 'rings') {
+      return `repeating-radial-gradient(circle at 50% 38%, ${tint} 0 2px, transparent 2px ${sp}px)`;
+    }
+    return '';
+  }
+
+  // ---------- video-frame plates (shares the ground/motif/shadow look above) ----------
+  // Geometry is computed in Node (demo-capture.mjs) and passed as px, so both
+  // plates and the ffmpeg overlay agree on the screen rect to the pixel.
+  function renderVideoFrame() {
+    const num = (k) => Number(params.get(k) || 0);
+    // SINGLE SOURCE OF TRUTH: the canvas size is the Node-computed geometry
+    // (cw/ch), NOT window.innerWidth/innerHeight. headless-new reports an
+    // innerHeight ~87px short of the requested --window-size, so deriving the
+    // SVG/viewBox from innerHeight silently clipped the bezel's bottom edge and
+    // corners (the path is drawn in Node coords up to g.H) while ffmpeg overlaid
+    // the video at the correct Node coords — the two disagreed and the video's
+    // square bottom corners hung outside the (clipped) phone. Pin the plate to
+    // cw/ch so the drawn bezel, the screen hole, and the video clip share ONE
+    // set of numbers. (Legacy callers without cw/ch fall back to inner*.)
+    const W = num('cw') || window.innerWidth, H = num('ch') || window.innerHeight;
+    // The requested window is >= H, but its viewport (innerHeight) is shorter, so
+    // an absolutely-positioned SVG taller than innerHeight would be clipped by the
+    // body's overflow:hidden. Grow the document to exactly H and let it overflow
+    // the short viewport — the --screenshot still captures the full requested H.
+    if (num('ch')) {
+      document.documentElement.style.height = H + 'px';
+      document.body.style.height = H + 'px';
+      document.body.style.minHeight = H + 'px';
+      document.body.style.overflow = 'visible';
+    }
+    const capSize = num('capsize'), capCy = num('capcy');
+    const isDark = theme === 'dark';
+    const k = W / 1320;
+
+    // One device per rect. The single-phone caller passes dx/dy/…; the --dual
+    // caller passes a SECOND rect as dx2/dy2/… so both phones share one ground,
+    // one shadow language, and one caption. Collect whichever are present.
+    const rectAt = (sfx) => {
+      if (!params.has('dx' + sfx)) return null;
+      return {
+        dx: num('dx' + sfx), dy: num('dy' + sfx), dw: num('dw' + sfx), dh: num('dh' + sfx),
+        sx: num('sx' + sfx), sy: num('sy' + sfx), sw: num('sw' + sfx), sh: num('sh' + sfx),
+        br: num('br' + sfx), sr: num('sr' + sfx),
+      };
+    };
+    const devices = [rectAt(''), rectAt('2')].filter(Boolean);
+
+    if (vmode === 'back') {
+      // The ground + motif the devices float on (opaque plate; ffmpeg's base layer).
+      if (style !== 'flat') {
+        const ground = groundGradient();
+        const m = motifLayer();
+        document.body.style.background = m ? `${m}, ${ground}` : ground;
+      }
+      // One soft accent-tinted drop shadow per device, scaled to the surface.
+      const shadow = isDark
+        ? `0 0 ${Math.round(150 * k)}px ${Math.round(-20 * k)}px ${css(mix(ac, PAPER, 0.35), 0.55)}`
+        : `0 ${Math.round(54 * k)}px ${Math.round(130 * k)}px ${Math.round(-44 * k)}px ${css(mix(ac, INK, 0.50), 0.42)}`;
+      for (const d of devices) {
+        const el = document.createElement('div');
+        el.className = 'vshadow';
+        el.style.cssText = `left:${d.dx}px;top:${d.dy}px;width:${d.dw}px;height:${d.dh}px;border-radius:${d.br}px;box-shadow:${shadow}`;
+        document.body.appendChild(el);
+      }
+      document.body.dataset.ready = '1';
+      return;
+    }
+
+    // vmode === 'front': each bezel as an SVG path with a TRUE transparent screen
+    // hole (even-odd fill) + the caption, on a transparent canvas.
+    const bezelColor = css(isDark ? PAPER : INK);
+    const fgColor = css(isDark ? PAPER : INK);
+    const rr = (x, y, w, h, r) => {
+      r = Math.min(r, w / 2, h / 2);
+      return `M${x + r},${y} h${w - 2 * r} a${r},${r} 0 0 1 ${r},${r} v${h - 2 * r} a${r},${r} 0 0 1 ${-r},${r} h${-(w - 2 * r)} a${r},${r} 0 0 1 ${-r},${-r} v${-(h - 2 * r)} a${r},${r} 0 0 1 ${r},${-r} z`;
+    };
+    const paths = devices
+      .map((d) => `${rr(d.dx, d.dy, d.dw, d.dh, d.br)} ${rr(d.sx, d.sy, d.sw, d.sh, d.sr)}`)
+      .join(' ');
+    const capEl = caption
+      ? `<text x="${W / 2}" y="${capCy + capSize * 0.34}" text-anchor="middle" font-size="${capSize}" font-weight="600" letter-spacing="-0.02em" fill="${fgColor}" font-family="IBM Plex Sans, -apple-system, Segoe UI, Roboto, sans-serif">${caption.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`
+      : '';
+    document.body.insertAdjacentHTML('beforeend',
+      `<svg class="vsvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">` +
+      `<path fill-rule="evenodd" fill="${bezelColor}" d="${paths}"/>` +
+      capEl + `</svg>`);
+    document.fonts.ready.then(() => { document.body.dataset.ready = '1'; });
+  }
+
+  if (vmode) { renderVideoFrame(); }
+  else if (style !== 'flat') {
+    const ground = groundGradient();
+    const m = motifLayer();
+    document.body.style.background = m ? `${m}, ${ground}` : ground;
+    // Branded josh-card panel: a hair of accent so it reads as part of the family.
+    document.documentElement.style.setProperty('--panel', theme === 'dark' ? css(mix(ac, INK, 0.62)) : css(mix(ac, PAPER, 0.97)));
+    document.documentElement.style.setProperty('--card-fg', theme === 'dark' ? css(PAPER) : css(INK));
+  }
+
+  // Floating-device shadow — one soft, accent-tinted drop. Dark theme = a glow so
+  // the device reads off the deep ground. Scaled to the surface (these canvases
+  // are 1080–2064px wide, so the blur/offset are large by screen-pixel standards).
+  if (style !== 'flat') {
+    const w = window.innerWidth || 1320;
+    const k = w / 1320;
+    if (theme === 'dark') {
+      const glow = css(mix(ac, PAPER, 0.35), 0.55);
+      document.documentElement.style.setProperty('--device-shadow', `0 0 ${Math.round(150 * k)}px ${Math.round(-20 * k)}px ${glow}`);
+    } else {
+      const sh = css(mix(ac, INK, 0.50), 0.42);
+      document.documentElement.style.setProperty('--device-shadow', `0 ${Math.round(54 * k)}px ${Math.round(130 * k)}px ${Math.round(-44 * k)}px ${sh}`);
+    }
+  }
+
+  // Editorial keyline geometry (scaled to surface width).
+  if (style === 'editorial') {
+    const w = window.innerWidth || 1320;
+    document.documentElement.style.setProperty('--kl-w', `${Math.round(w * 0.18)}px`);
+    document.documentElement.style.setProperty('--kl-h', `${Math.max(8, Math.round(w * 0.009))}px`);
+    document.documentElement.style.setProperty('--kl-mt', `${Math.round(w * 0.02)}px`);
+  }
+
+  const frame = document.getElementById('frame');
+  if (vmode) { /* device plates already rendered by renderVideoFrame() */ }
+  else if (surface === 'chrome') {
+    frame.innerHTML = `
+      <div class="window">
+        <div class="titlebar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="urlbar"></span>
+        </div>
+        <div class="body"><img src="${screen}" alt=""></div>
+      </div>`;
+  } else if (surface === 'josh-card') {
+    frame.innerHTML = `
+      <div class="josh-card">
+        <div class="josh-card__panel">
+          <div class="josh-card__main">
+            <div class="josh-card__title">What's a<br>Josh Approved app?</div>
+            <ul class="josh-card__list">
+              <li class="josh-card__item"><span class="josh-card__check">&#10003;</span><span>No ads, ever</span></li>
+              <li class="josh-card__item"><span class="josh-card__check">&#10003;</span><span>No tracking</span></li>
+              <li class="josh-card__item"><span class="josh-card__check">&#10003;</span><span>Open source</span></li>
+              <li class="josh-card__item"><span class="josh-card__check">&#10003;</span><span>Pay what you want</span></li>
+            </ul>
+            <div class="josh-card__wordmark">
+              <svg class="josh-card__wordmark-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>josh approved</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    frame.innerHTML = `
+      <div class="device">
+        <div class="screen"><img src="${screen}" alt=""></div>
+      </div>`;
+  }
+
+  // Size the device to fit the available frame box on BOTH axes. For a normal
+  // shot the aperture aspect = the capture's own pixels (so the whole screen
+  // shows, never cropped). For layout=detail the aperture aspect = the CROP's
+  // pixels and the capture is shown as a magnified background window.
+  function fitDevice(aspectRatioPx) {
+    const device = document.querySelector('.device');
+    const frameEl = document.getElementById('frame');
+    if (!device || !frameEl) return;
+    const r = aspectRatioPx;
+    let availW = frameEl.clientWidth;
+    let availH = frameEl.clientHeight;
+    // layout=bleed: let the device run to the bottom edge (implied "there's more").
+    // Width-bound and tall, with the bottom bezel clipped by the stage — the
+    // SCREEN stays whole because contain-fit keeps the capture inside the aperture.
+    if (layout === 'bleed') {
+      availH = availH * 1.16;
+    }
+    let w, h;
+    if (availW / availH > r) { h = availH; w = h * r; }
+    else { w = availW; h = w / r; }
+    device.style.aspectRatio = `${r}`;
+    device.style.width = `${w}px`;
+    device.style.height = `${h}px`;
+    device.style.maxWidth = 'none';
+    device.style.maxHeight = 'none';
+    if (layout === 'bleed') { document.querySelector('.stage').style.overflow = 'hidden'; device.style.alignSelf = 'end'; }
+  }
+
+  function applyDetailCrop(img) {
+    const sc = document.querySelector('.screen');
+    if (!sc || crop.length !== 4) return null;
+    const [cx, cy, cw, ch] = crop;
+    sc.style.backgroundImage = `url("${screen}")`;
+    sc.style.backgroundSize = `${100 / cw}% ${100 / ch}%`;
+    sc.style.backgroundPosition = `${(cx / (1 - cw)) * 100}% ${(cy / (1 - ch)) * 100}%`;
+    img.style.display = 'none';
+    return (cw * img.naturalWidth) / (ch * img.naturalHeight); // aperture aspect
+  }
+
+  Promise.all([
+    document.fonts.ready,
+    new Promise((res) => {
+      const img = document.querySelector('.screen img') || document.querySelector('img');
+      if (!img) return res();
+      const done = () => {
+        if (img.naturalWidth && img.naturalHeight) {
+          let r = img.naturalWidth / img.naturalHeight;
+          if (layout === 'detail' && crop.length === 4) {
+            const cr = applyDetailCrop(img);
+            if (cr) r = cr;
+          }
+          fitDevice(r);
+        }
+        res();
+      };
+      if (img.complete) return done();
+      img.addEventListener('load', done);
+      img.addEventListener('error', res);
+    }),
+  ]).then(() => { document.body.dataset.ready = '1'; });
+</script>
+</body>
+</html>

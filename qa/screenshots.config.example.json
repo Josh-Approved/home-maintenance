@@ -1,0 +1,36 @@
+{
+  "_comment": "Slot pattern (canonical-store-listings.md § Screenshot principles): slot 1 = core value prop (FUNCTION ONLY — never 'Free'/price/promo text; both Apple and Play reject price baked into screenshots, so the cost claim lives in the description, not the image), slot 2 = Josh Approved card (kind: card, no source), slots 3..N = features in descending priority. JA card stays in slot 2 even with fewer feature shots after. Framing: style=signature (accent ground + motif + floating device) is the studio default — the accent is read from src/theme/appAccent.ts; set a top-level `accent` only to override the marketing ground. Per-slot `layout` (hero|detail|bleed), `crop` (for detail), and `theme` (light|dark) add intra-carousel variety; see § Framing & visual style.",
+  "style": "signature",
+  "motif": "dots",
+  "stores": {
+    "ios": [
+      { "id": "core",          "source": "ios/01-core.png",      "caption": "<function in plain words>. <verb phrase showing it in use>." },
+      { "id": "josh-approved", "kind": "card" },
+      { "id": "feature-1",     "source": "ios/03-feature-1.png", "caption": "<top feature in plain words>." },
+      { "id": "feature-2",     "source": "ios/04-feature-2.png", "caption": "<second feature>." }
+    ],
+    "android": [
+      { "id": "core",          "source": "android/01-core.png",      "caption": "<function in plain words>. <verb phrase showing it in use>." },
+      { "id": "josh-approved", "kind": "card" },
+      { "id": "feature-1",     "source": "android/03-feature-1.png", "caption": "<top feature in plain words>." },
+      { "id": "feature-2",     "source": "android/04-feature-2.png", "caption": "<second feature>." }
+    ],
+    "ipad": [
+      { "id": "core",          "source": "ipad/01-core.png",      "caption": "<function in plain words>. <verb phrase showing it in use>." },
+      { "id": "josh-approved", "kind": "card" },
+      { "id": "feature-1",     "source": "ipad/03-feature-1.png", "caption": "<top feature in plain words>." },
+      { "id": "feature-2",     "source": "ipad/04-feature-2.png", "caption": "<second feature>." }
+    ],
+    "androidTablet": [
+      { "id": "core",          "source": "androidTablet/01-core.png",      "caption": "<function in plain words>. <verb phrase showing it in use>." },
+      { "id": "josh-approved", "kind": "card" },
+      { "id": "feature-1",     "source": "androidTablet/03-feature-1.png", "caption": "<top feature in plain words>." },
+      { "id": "feature-2",     "source": "androidTablet/04-feature-2.png", "caption": "<second feature>." }
+    ],
+    "chrome": [
+      { "id": "core",          "source": "chrome/01-core.png",      "caption": "<function in plain words>. <verb phrase showing it in use>." },
+      { "id": "josh-approved", "kind": "card" },
+      { "id": "feature-1",     "source": "chrome/03-feature-1.png", "caption": "<top feature in plain words>." }
+    ]
+  }
+}
