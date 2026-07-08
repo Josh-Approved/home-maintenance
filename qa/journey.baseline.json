@@ -1,0 +1,24 @@
+{
+  "anchors": {
+    "due-title": {
+      "text": "Due, tab, 1 of 4",
+      "id": "tab-due"
+    },
+    "tasks-tab": {
+      "text": "Tasks, tab, 2 of 4",
+      "id": "tab-tasks"
+    },
+    "appliances-tab": {
+      "text": "Appliances, tab, 3 of 4",
+      "id": "tab-appliances"
+    },
+    "me-tab": {
+      "text": "Me, tab, 4 of 4",
+      "id": "tab-me"
+    },
+    "settings-title": {
+      "text": "Settings",
+      "id": null
+    }
+  }
+}
