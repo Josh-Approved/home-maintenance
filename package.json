@@ -37,7 +37,9 @@
     "jest-expo": "^57.0.1",
     "pixelmatch": "^7.2.0",
     "pngjs": "^7.0.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "@testing-library/react-native": "^14.0.1",
+    "test-renderer": "^1.2.0"
   },
   "scripts": {
     "start": "expo start --port 8366",
