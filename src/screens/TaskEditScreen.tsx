@@ -331,7 +331,7 @@ function makeStyles(c: Colors) {
     },
     chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s2 },
     chip: {
-      minHeight: 36,
+      minHeight: target.min,
       justifyContent: 'center',
       paddingHorizontal: space.s4,
       borderRadius: radius.pill,

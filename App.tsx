@@ -67,6 +67,7 @@ function Tabs() {
         component={DueScreen}
         options={{
           tabBarLabel: t('tabs.due'),
+          tabBarButtonTestID: 'tab-due',
           tabBarIcon: ({ color, size }) => <CalendarClock size={size} color={color} strokeWidth={1.5} />,
         }}
       />
@@ -75,6 +76,7 @@ function Tabs() {
         component={TasksScreen}
         options={{
           tabBarLabel: t('tabs.tasks'),
+          tabBarButtonTestID: 'tab-tasks',
           tabBarIcon: ({ color, size }) => <ListChecks size={size} color={color} strokeWidth={1.5} />,
         }}
       />
@@ -83,6 +85,7 @@ function Tabs() {
         component={AppliancesScreen}
         options={{
           tabBarLabel: t('tabs.appliances'),
+          tabBarButtonTestID: 'tab-appliances',
           tabBarIcon: ({ color, size }) => <Refrigerator size={size} color={color} strokeWidth={1.5} />,
         }}
       />
@@ -91,6 +94,7 @@ function Tabs() {
         component={SettingsScreen}
         options={{
           tabBarLabel: t('tabs.me'),
+          tabBarButtonTestID: 'tab-me',
           tabBarIcon: ({ color, size }) => <CircleUserRound size={size} color={color} strokeWidth={1.5} />,
         }}
       />

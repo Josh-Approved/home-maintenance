@@ -17,6 +17,9 @@ import { useTasksStore } from '../store/tasks';
 import { useAppliancesStore } from '../store/appliances';
 import { exportData, pickAndParseData } from '../lib/transfer';
 import { AboutRow } from '../components/AboutRow';
+import TipJarSheet from '../components/TipJarSheet';
+import { TIP_PRODUCT_IDS } from '../constants/tipProducts';
+import { TIP_JAR_ENABLED } from '../lib/links';
 import { SettingsAbout } from '../components/SettingsAbout';
 import { t } from '../i18n';
 import {
@@ -40,6 +43,7 @@ export default function SettingsScreen({ navigation }: Props) {
   const appliances = useAppliancesStore((st) => st.appliances);
   const importAppliances = useAppliancesStore((st) => st.importAppliances);
   const [status, setStatus] = useState<string | null>(null);
+  const [tipVisible, setTipVisible] = useState(false);
 
   const onExport = useCallback(() => {
     exportData({ tasks, completions, appliances }).catch(() =>
@@ -83,8 +87,14 @@ export default function SettingsScreen({ navigation }: Props) {
         <AboutRow label={t('settings.import')} icon={Download} onPress={onImport} />
         {status ? <Text style={s.status}>{status}</Text> : null}
 
-        <SettingsAbout onAcknowledgements={() => navigation.navigate('Acknowledgements')} />
+        <SettingsAbout
+          onAcknowledgements={() => navigation.navigate('Acknowledgements')}
+          onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined}
+        />
       </ScrollView>
+      {tipVisible && (
+        <TipJarSheet visible onDismiss={() => setTipVisible(false)} productIds={TIP_PRODUCT_IDS} />
+      )}
     </SafeAreaView>
   );
 }

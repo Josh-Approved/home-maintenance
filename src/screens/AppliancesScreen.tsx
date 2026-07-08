@@ -18,6 +18,9 @@ import { activeAppliances } from '../data/appliance';
 import { tasksForAppliance } from '../data/task';
 import { EmptyState } from '../components/EmptyState';
 import { FundingFooter } from '../components/FundingFooter';
+import TipJarSheet from '../components/TipJarSheet';
+import { TIP_PRODUCT_IDS } from '../constants/tipProducts';
+import { TIP_JAR_ENABLED } from '../lib/links';
 import { t } from '../i18n';
 import {
   useTheme,
@@ -36,6 +39,7 @@ type Props = CompositeScreenProps<BottomTabScreenProps<TabParamList, 'Appliances
 export default function AppliancesScreen({ navigation }: Props) {
   const { c } = useTheme();
   const s = makeStyles(c);
+  const [tipVisible, setTipVisible] = React.useState(false);
   const appliances = useAppliancesStore((st) => st.appliances);
   const tasks = useTasksStore((st) => st.tasks);
 
@@ -50,7 +54,7 @@ export default function AppliancesScreen({ navigation }: Props) {
       {list.length === 0 ? (
         <>
           <EmptyState message={t('appliances.empty')} />
-          <FundingFooter />
+          <FundingFooter onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined} />
         </>
       ) : (
         <FlatList
@@ -59,7 +63,7 @@ export default function AppliancesScreen({ navigation }: Props) {
           contentContainerStyle={[s.listContent, s.grow]}
           ListFooterComponent={
             <View style={s.footerHolder}>
-              <FundingFooter />
+              <FundingFooter onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined} />
             </View>
           }
           renderItem={({ item }) => {
@@ -94,6 +98,9 @@ export default function AppliancesScreen({ navigation }: Props) {
       >
         <Plus size={24} color={c.inkButtonText} strokeWidth={2} />
       </Pressable>
+      {tipVisible && (
+        <TipJarSheet visible onDismiss={() => setTipVisible(false)} productIds={TIP_PRODUCT_IDS} />
+      )}
     </SafeAreaView>
   );
 }

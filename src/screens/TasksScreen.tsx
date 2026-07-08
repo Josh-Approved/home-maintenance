@@ -19,6 +19,9 @@ import { intervalText } from '../lib/format';
 import { categoryHue } from '../components/CategoryChip';
 import { EmptyState } from '../components/EmptyState';
 import { FundingFooter } from '../components/FundingFooter';
+import TipJarSheet from '../components/TipJarSheet';
+import { TIP_PRODUCT_IDS } from '../constants/tipProducts';
+import { TIP_JAR_ENABLED } from '../lib/links';
 import { t, formatDate } from '../i18n';
 import {
   useTheme,
@@ -37,6 +40,7 @@ type Props = CompositeScreenProps<BottomTabScreenProps<TabParamList, 'Tasks'>, N
 export default function TasksScreen({ navigation }: Props) {
   const { c } = useTheme();
   const s = makeStyles(c);
+  const [tipVisible, setTipVisible] = React.useState(false);
   const tasks = useTasksStore((st) => st.tasks);
   const completions = useTasksStore((st) => st.completions);
 
@@ -58,7 +62,7 @@ export default function TasksScreen({ navigation }: Props) {
       {active.length === 0 ? (
         <>
           <EmptyState message={t('tasks.empty')} />
-          <FundingFooter />
+          <FundingFooter onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined} />
         </>
       ) : (
         <SectionList
@@ -68,7 +72,7 @@ export default function TasksScreen({ navigation }: Props) {
           contentContainerStyle={[s.listContent, s.grow]}
           ListFooterComponent={
             <View style={s.footerHolder}>
-              <FundingFooter />
+              <FundingFooter onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined} />
             </View>
           }
           renderSectionHeader={({ section }) => (
@@ -112,6 +116,9 @@ export default function TasksScreen({ navigation }: Props) {
       >
         <Plus size={24} color={c.inkButtonText} strokeWidth={2} />
       </Pressable>
+      {tipVisible && (
+        <TipJarSheet visible onDismiss={() => setTipVisible(false)} productIds={TIP_PRODUCT_IDS} />
+      )}
     </SafeAreaView>
   );
 }

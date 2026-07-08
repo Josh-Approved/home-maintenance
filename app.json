@@ -15,7 +15,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#7B5B44",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -35,7 +35,13 @@
       "expo-status-bar",
       "expo-font",
       "expo-notifications",
-      "expo-mail-composer"
-    ]
+      "expo-mail-composer",
+      "expo-iap"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "adeb5a71-8eb1-4da4-80ce-f5c6a599c56d"
+      }
+    }
   }
 }

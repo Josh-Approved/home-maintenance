@@ -1,22 +1,73 @@
 {
   "$comment": "Selector registry. Flows reference @keys, never raw copy. text = Maestro regex (matches visible text OR a11y label). Anchors target the seeded data (src/qa/fixtures.ts). Card-ish rows can merge children into one a11y label on iOS, so name anchors are wrapped in .* where they ride inside a labeled row.",
   "anchors": {
-    "due-title":        { "text": "Due", "note": "DueScreen header title (i18n due.title); also the tab label, but the header renders first in the tree" },
-    "overdue-section":  { "text": "Overdue", "note": "the Overdue section header (i18n due.overdue)" },
-    "overdue-task":     { "text": ".*Replace HVAC filter.*", "note": "seeded overdue task row (fixtures: anchored 110d ago on a 90d interval)" },
-    "done-overdue":     { "text": "Done: Replace HVAC filter", "note": "the one-tap Done circle's a11y label on the seeded overdue task" },
-    "done-toast":       { "text": ".*Marked done.*", "note": "the undo bar after a Done tap (i18n due.doneToast) — the Tier-2 outcome proof that markDone landed" },
-    "tasks-tab":        { "text": "Tasks", "note": "bottom tab label; unique while the Due screen is frontmost" },
-    "add-task-fab":     { "text": "Add task", "note": "the + FAB on Tasks (a11y label tasks.add). Opens the library picker." },
-    "library-title":    { "text": "Common tasks", "note": "LibraryPicker header title (i18n library.title)" },
-    "library-sump":     { "text": ".*Test sump pump.*", "note": "a library row NOT in the seed — the add-from-library target" },
-    "library-add-one":  { "text": "Add 1", "note": "the add bar after selecting one library task (i18n library.addOne)" },
-    "added-task":       { "text": ".*Test sump pump.*", "note": "the added task on the Tasks list. assertNot before / assert after = the library add landed." },
-    "appliances-tab":   { "text": "Appliances", "note": "bottom tab label; unique while Tasks is frontmost" },
-    "appliance-fridge": { "text": ".*Refrigerator.*", "note": "seeded appliance row (fixtures: LG LFXS26973S)" },
-    "find-manual":      { "text": "Find manual", "note": "the manual-finder button on the appliance editor (i18n appliances.findManual)" },
-    "appliance-back":   { "text": "Back", "note": "ScreenHeader back button a11y label (shell common.back)" },
-    "me-tab":           { "text": "Me", "note": "bottom tab label" },
-    "settings-title":   { "text": "Settings", "note": "SettingsScreen header title (shell settings.title)" }
+    "due-title": {
+      "text": "Due",
+      "note": "DueScreen header title (i18n due.title); also the tab label, but the header renders first in the tree"
+    },
+    "overdue-section": {
+      "text": "Overdue",
+      "note": "the Overdue section header (i18n due.overdue)"
+    },
+    "overdue-task": {
+      "text": ".*Replace HVAC filter.*",
+      "note": "seeded overdue task row (fixtures: anchored 110d ago on a 90d interval)"
+    },
+    "done-overdue": {
+      "text": "Done: Replace HVAC filter",
+      "note": "the one-tap Done circle's a11y label on the seeded overdue task"
+    },
+    "done-toast": {
+      "text": ".*Marked done.*",
+      "note": "the undo bar after a Done tap (i18n due.doneToast) \u2014 the Tier-2 outcome proof that markDone landed"
+    },
+    "tasks-tab": {
+      "testID": "tab-tasks",
+      "note": "bottom tab button (tabBarButtonTestID) \u2014 copy-proof; text matching collides with the Tasks screen title and category headers"
+    },
+    "add-task-fab": {
+      "text": "Add task",
+      "note": "the + FAB on Tasks (a11y label tasks.add). Opens the library picker."
+    },
+    "library-title": {
+      "text": "Common tasks",
+      "note": "LibraryPicker header title (i18n library.title)"
+    },
+    "library-sump": {
+      "text": ".*Test sump pump.*",
+      "note": "a library row NOT in the seed \u2014 the add-from-library target"
+    },
+    "library-add-one": {
+      "text": "Add 1",
+      "note": "the add bar after selecting one library task (i18n library.addOne)"
+    },
+    "added-task": {
+      "text": ".*Test sump pump.*",
+      "note": "the added task on the Tasks list. assertNot before / assert after = the library add landed."
+    },
+    "appliances-tab": {
+      "testID": "tab-appliances",
+      "note": "bottom tab button \u2014 testID because the Tasks screen shows an 'Appliances' category section header"
+    },
+    "appliance-fridge": {
+      "text": ".*Refrigerator.*",
+      "note": "seeded appliance row (fixtures: LG LFXS26973S)"
+    },
+    "find-manual": {
+      "text": "Find manual",
+      "note": "the manual-finder button on the appliance editor (i18n appliances.findManual)"
+    },
+    "appliance-back": {
+      "text": "Back",
+      "note": "ScreenHeader back button a11y label (shell common.back)"
+    },
+    "me-tab": {
+      "testID": "tab-me",
+      "note": "bottom tab button"
+    },
+    "settings-title": {
+      "text": "Settings",
+      "note": "SettingsScreen header title (shell settings.title)"
+    }
   }
 }

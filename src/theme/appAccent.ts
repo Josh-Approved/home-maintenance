@@ -10,4 +10,4 @@
  * light and dark background washes from it, so one declaration is enough.
  */
 
-export const APP_ACCENT = '#6B6B72';
+export const APP_ACCENT = '#7B5B44';

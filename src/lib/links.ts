@@ -21,6 +21,16 @@ export const IOS_APP_STORE_ID = '';
 export const ANDROID_PACKAGE = 'com.joshapproved.homemaintenance';
 
 export const BMAC_URL = 'https://buymeacoffee.com/jtysonwilliams';
+
+/**
+ * DONATIONS_ENABLED gates every Buy Me a Coffee surface. It stays false --
+ * Apple rejects external donation links for a for-profit app (guideline
+ * 3.1.1); the IAP tip jar replaces the link-out.
+ * TIP_JAR_ENABLED gates the sanctioned replacement: the same support
+ * placements, each opening the canonical TipJarSheet.
+ */
+export const DONATIONS_ENABLED: boolean = false;
+export const TIP_JAR_ENABLED: boolean = true;
 export const STUDIO_URL = 'https://joshapproved.com';
 export const REPO_URL = 'https://github.com/josh-approved/home-maintenance';
 export const PRIVACY_URL =
