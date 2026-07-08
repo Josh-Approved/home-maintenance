@@ -1,11 +1,22 @@
 {
-  "$comment": "Selector registry for the tracker archetype. Flows reference @keys, never raw copy. text = Maestro regex (matches visible text OR a11y label). Anchors target the seeded entries (src/qa/fixtures.ts). The AddEntry value field autofocuses and defaults to 1, so the journey only types into the note field and asserts the noted entry on the home list.",
+  "$comment": "Selector registry. Flows reference @keys, never raw copy. text = Maestro regex (matches visible text OR a11y label). Anchors target the seeded data (src/qa/fixtures.ts). Card-ish rows can merge children into one a11y label on iOS, so name anchors are wrapped in .* where they ride inside a labeled row.",
   "anchors": {
-    "home-title":   { "text": "Tracker", "note": "TrackerHomeScreen header title (i18n home.title)" },
-    "today-card":   { "text": "Today", "note": "the Today summary card label (i18n home.today)" },
-    "add-button":   { "text": "Log an entry", "note": "the + FAB on home (a11y label home.add). Opens AddEntry." },
-    "note-input":   { "text": "Note .optional.", "note": "the note TextInput on AddEntry (a11y label entry.note = 'Note (optional)'; parens escaped for the Maestro regex)." },
-    "save-button":  { "text": "Save", "note": "the save action in the AddEntry header (a11y label entry.save)" },
-    "added-entry":  { "text": "Espresso", "note": "an entry NOT in the seed; logged by the core add action. assertNot before / assert after = the write + summary refresh landed." }
+    "due-title":        { "text": "Due", "note": "DueScreen header title (i18n due.title); also the tab label, but the header renders first in the tree" },
+    "overdue-section":  { "text": "Overdue", "note": "the Overdue section header (i18n due.overdue)" },
+    "overdue-task":     { "text": ".*Replace HVAC filter.*", "note": "seeded overdue task row (fixtures: anchored 110d ago on a 90d interval)" },
+    "done-overdue":     { "text": "Done: Replace HVAC filter", "note": "the one-tap Done circle's a11y label on the seeded overdue task" },
+    "done-toast":       { "text": ".*Marked done.*", "note": "the undo bar after a Done tap (i18n due.doneToast) — the Tier-2 outcome proof that markDone landed" },
+    "tasks-tab":        { "text": "Tasks", "note": "bottom tab label; unique while the Due screen is frontmost" },
+    "add-task-fab":     { "text": "Add task", "note": "the + FAB on Tasks (a11y label tasks.add). Opens the library picker." },
+    "library-title":    { "text": "Common tasks", "note": "LibraryPicker header title (i18n library.title)" },
+    "library-sump":     { "text": ".*Test sump pump.*", "note": "a library row NOT in the seed — the add-from-library target" },
+    "library-add-one":  { "text": "Add 1", "note": "the add bar after selecting one library task (i18n library.addOne)" },
+    "added-task":       { "text": ".*Test sump pump.*", "note": "the added task on the Tasks list. assertNot before / assert after = the library add landed." },
+    "appliances-tab":   { "text": "Appliances", "note": "bottom tab label; unique while Tasks is frontmost" },
+    "appliance-fridge": { "text": ".*Refrigerator.*", "note": "seeded appliance row (fixtures: LG LFXS26973S)" },
+    "find-manual":      { "text": "Find manual", "note": "the manual-finder button on the appliance editor (i18n appliances.findManual)" },
+    "appliance-back":   { "text": "Back", "note": "ScreenHeader back button a11y label (shell common.back)" },
+    "me-tab":           { "text": "Me", "note": "bottom tab label" },
+    "settings-title":   { "text": "Settings", "note": "SettingsScreen header title (shell settings.title)" }
   }
 }

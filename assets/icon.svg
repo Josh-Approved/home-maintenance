@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Canonical icon source (build-icon.mjs): accent bg + paper glyph. -->
+  <rect id="bg" width="1024" height="1024" fill="#7B5B44"/>
+  <g id="glyph" fill="#FAFAF7">
+    <!-- House silhouette with a door cutout; roofline echoes a checkbox tick angle without being one. -->
+    <path fill-rule="evenodd" d="
+      M512 208
+      L858 494
+      L810 552
+      L512 306
+      L214 552
+      L166 494
+      Z
+      M512 348
+      L768 560
+      V816
+      H256
+      V560
+      Z
+      M452 620
+      H572
+      V816
+      H452
+      Z"/>
+  </g>
+</svg>

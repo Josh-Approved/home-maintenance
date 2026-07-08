@@ -33,7 +33,9 @@
       "expo-sharing",
       "expo-splash-screen",
       "expo-status-bar",
-      "expo-font"
+      "expo-font",
+      "expo-notifications",
+      "expo-mail-composer"
     ]
   }
 }

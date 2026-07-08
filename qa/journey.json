@@ -1,21 +1,41 @@
 {
-  "$comment": "tracker-archetype screenshot traversal + Tier-2 outcome assertion. Generates qa/flows/mobile.yaml (scripts/qa/compile-flow.mjs); never hand-edit the yaml. Anchors live in qa/selectors.json and target the seeded entries (src/qa/fixtures.ts). The core action pinned here is LOGGING an entry: a noted entry is absent on the home list before save and present after (assertNot -> add -> save -> assert), proving the write + summary refresh landed.",
+  "$comment": "Screenshot traversal + Tier-2 outcome assertions. Generates qa/flows/mobile.yaml (scripts/qa/compile-flow.mjs); never hand-edit the yaml. Anchors live in qa/selectors.json and target the seeded data (src/qa/fixtures.ts). Three core actions are pinned with outcome assertions: (1) one-tap MARK DONE on the Due list (the undo bar is absent before, present after), (2) ADD FROM LIBRARY (the task is absent from Tasks before, present after), (3) the appliance MANUAL FINDER button is reachable from the seeded appliance.",
   "appId": "com.joshapproved.homemaintenance",
   "clearState": true,
   "diagnosticLaunchShot": true,
   "settleMs": 8000,
   "steps": [
-    { "waitFor": "@home-title", "timeout": 30000 },
-    { "waitFor": "@today-card", "timeout": 15000 },
-    { "screenshot": "home" },
+    { "waitFor": "@due-title", "timeout": 30000 },
+    { "waitFor": "@overdue-section", "timeout": 15000 },
+    { "assert": "@overdue-task" },
+    { "screenshot": "due" },
 
-    { "assertNot": "@added-entry" },
-    { "tap": "@add-button" },
-    { "waitFor": "@note-input", "timeout": 10000 },
-    { "screenshot": "add" },
-    { "tap": "@note-input" },
-    { "type": "Espresso" },
-    { "tap": "@save-button" },
-    { "assert": "@added-entry" }
+    { "assertNot": "@done-toast" },
+    { "tap": "@done-overdue" },
+    { "assert": "@done-toast" },
+
+    { "tap": "@tasks-tab" },
+    { "waitFor": "@add-task-fab", "timeout": 10000 },
+    { "assertNot": "@added-task" },
+    { "screenshot": "tasks" },
+    { "tap": "@add-task-fab" },
+    { "waitFor": "@library-title", "timeout": 10000 },
+    { "tap": "@library-sump" },
+    { "screenshot": "library" },
+    { "tap": "@library-add-one" },
+    { "waitFor": "@add-task-fab", "timeout": 10000 },
+    { "assert": "@added-task" },
+
+    { "tap": "@appliances-tab" },
+    { "waitFor": "@appliance-fridge", "timeout": 10000 },
+    { "screenshot": "appliances" },
+    { "tap": "@appliance-fridge" },
+    { "waitFor": "@find-manual", "timeout": 10000 },
+    { "screenshot": "appliance-detail" },
+    { "tap": "@appliance-back" },
+
+    { "tap": "@me-tab" },
+    { "waitFor": "@settings-title", "timeout": 10000 },
+    { "screenshot": "settings" }
   ]
 }

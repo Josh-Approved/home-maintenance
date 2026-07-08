@@ -6,16 +6,18 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import { Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Upload, Download } from 'lucide-react-native';
+import type { CompositeScreenProps } from '@react-navigation/native';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../../App';
-import { useEntriesStore } from '../store/entries';
-import { exportEntries, pickAndParseEntries } from '../lib/transfer';
+import type { RootStackParamList, TabParamList } from '../../App';
+import { useTasksStore } from '../store/tasks';
+import { useAppliancesStore } from '../store/appliances';
+import { exportData, pickAndParseData } from '../lib/transfer';
 import { AboutRow } from '../components/AboutRow';
 import { SettingsAbout } from '../components/SettingsAbout';
-import { ScreenHeader } from '../components/ScreenHeader';
 import { t } from '../i18n';
 import {
   useTheme,
@@ -27,35 +29,44 @@ import {
   AppearanceToggle,
 } from '../theme';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
+type Props = CompositeScreenProps<BottomTabScreenProps<TabParamList, 'Me'>, NativeStackScreenProps<RootStackParamList>>;
 
 export default function SettingsScreen({ navigation }: Props) {
   const { c } = useTheme();
   const s = makeStyles(c);
-  const entries = useEntriesStore((st) => st.entries);
-  const importEntries = useEntriesStore((st) => st.importEntries);
+  const tasks = useTasksStore((st) => st.tasks);
+  const completions = useTasksStore((st) => st.completions);
+  const importData = useTasksStore((st) => st.importData);
+  const appliances = useAppliancesStore((st) => st.appliances);
+  const importAppliances = useAppliancesStore((st) => st.importAppliances);
   const [status, setStatus] = useState<string | null>(null);
 
   const onExport = useCallback(() => {
-    exportEntries(entries).catch(() => setStatus(t('settings.couldntExport')));
-  }, [entries]);
+    exportData({ tasks, completions, appliances }).catch(() =>
+      setStatus(t('settings.couldntExport'))
+    );
+  }, [tasks, completions, appliances]);
 
   const onImport = useCallback(async () => {
     try {
-      const incoming = await pickAndParseEntries();
-      if (incoming.length === 0) {
+      const incoming = await pickAndParseData();
+      if (incoming.tasks.length === 0 && incoming.appliances.length === 0) {
         setStatus(t('settings.nothingImported'));
         return;
       }
-      importEntries(incoming);
+      importAppliances(incoming.appliances);
+      importData(incoming.tasks, incoming.completions);
+      setStatus(t('settings.importedToast', { count: String(incoming.tasks.length) }));
     } catch {
       setStatus(t('settings.couldntRead'));
     }
-  }, [importEntries]);
+  }, [importData, importAppliances]);
 
   return (
     <SafeAreaView style={s.safe} edges={['top', 'left', 'right', 'bottom']}>
-      <ScreenHeader title={t('settings.title')} onBack={() => navigation.goBack()} />
+      <View style={s.header}>
+        <Text style={s.title}>{t('settings.title')}</Text>
+      </View>
       <ScrollView contentContainerStyle={s.content}>
         <Text style={s.sectionLabel}>{t('settings.appearance')}</Text>
         <AppearanceToggle
@@ -81,6 +92,14 @@ export default function SettingsScreen({ navigation }: Props) {
 function makeStyles(c: Colors) {
   return StyleSheet.create({
     safe: { flex: 1, backgroundColor: c.bg },
+    header: {
+      ...boundedContent,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: space.s5,
+      paddingVertical: space.s4,
+    },
+    title: { ...ty.md, fontFamily: fontFamily.sansSemibold, color: c.fg },
     content: { ...boundedContent, paddingBottom: space.s9 },
     sectionLabel: {
       ...ty.xs,
