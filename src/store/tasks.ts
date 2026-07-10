@@ -19,6 +19,7 @@ import {
   makeTask,
   makeCompletion,
   completionsFor,
+  withLastDoneAt,
 } from '../data/task';
 import type { LibraryTask } from '../data/library';
 import { putTombstone } from '../storage/kv';
@@ -39,13 +40,18 @@ interface TasksState {
   hydrate: () => Promise<void>;
 
   addTask: (fields: NewTaskFields) => string;
-  /** Add several library tasks at once (the starter-library picker). */
-  addFromLibrary: (items: LibraryTask[]) => number;
+  /** Add several library tasks at once (the starter-library picker). Items may
+   *  arrive with an already-resolved applianceId (name-matched by the caller).
+   *  Returns the ids of the tasks actually created, for the setup step. */
+  addFromLibrary: (items: (LibraryTask & { applianceId?: string })[]) => string[];
   updateTask: (id: string, edits: TaskEdits) => void;
   deleteTask: (id: string) => void;
 
   /** One-tap done: stamps a completion (backdatable) and rolls the schedule. */
   markDone: (taskId: string, at?: number) => void;
+  /** Set or correct when this task was last serviced: moves the latest
+   *  completion to `at`, or records one if the task was never done. */
+  setLastDone: (taskId: string, at: number) => void;
   /** Undo the most recent completion (tombstone — the history stays honest). */
   undoLastDone: (taskId: string) => void;
 
@@ -100,13 +106,14 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
           intervalDays: i.intervalDays,
           note: i.note,
           libraryId: i.id,
+          applianceId: i.applianceId,
         })
       );
-    if (fresh.length === 0) return 0;
+    if (fresh.length === 0) return [];
     set((s) => ({ tasks: [...fresh, ...s.tasks] }));
     for (const t of fresh) persistTask(t);
     syncReminders(get().tasks, get().completions);
-    return fresh.length;
+    return fresh.map((t) => t.id);
   },
 
   updateTask: (id, edits) => {
@@ -134,6 +141,13 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
     const completion = makeCompletion(taskId, at);
     set((s) => ({ completions: [completion, ...s.completions] }));
     persistCompletion(completion);
+    syncReminders(get().tasks, get().completions);
+  },
+
+  setLastDone: (taskId, at) => {
+    const { completions, changed } = withLastDoneAt(taskId, get().completions, at);
+    set({ completions });
+    persistCompletion(changed);
     syncReminders(get().tasks, get().completions);
   },
 

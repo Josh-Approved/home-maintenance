@@ -18,6 +18,7 @@ import {
   startOfDay,
   daysBetween,
   tasksForAppliance,
+  withLastDoneAt,
   sanitizeImportedTask,
   sanitizeImportedCompletion,
   type MaintenanceTask,
@@ -29,7 +30,7 @@ import {
   activeAppliances,
   sanitizeImportedAppliance,
 } from '../appliance';
-import { CATEGORIES } from '../library';
+import { CATEGORIES, LIBRARY } from '../library';
 
 /** A fixed local reference: noon on an arbitrary Wednesday. */
 const NOW = new Date(2026, 5, 10, 12, 0, 0).getTime();
@@ -214,6 +215,63 @@ describe('import sanitizers (canon § Backup Layer 3)', () => {
     expect(got!.appliance.model).toBe('F80');
     expect(got!.sourceId).toBe('a9');
     expect(sanitizeImportedAppliance({ brand: 'LG' })).toBeNull();
+  });
+});
+
+describe('last-done editing (withLastDoneAt)', () => {
+  it('records a completion when the task was never done, and the due date follows', () => {
+    const t = task({ intervalDays: 60 });
+    const { completions, changed } = withLastDoneAt(t.id, [], NOW - 30 * DAY);
+    expect(changed.taskId).toBe(t.id);
+    expect(lastDoneAt(t.id, completions)).toBe(NOW - 30 * DAY);
+    // The air-filter case: done 30d ago on a 60d interval → due in 30d, not 60d.
+    expect(dueAt(t, completions)).toBe(startOfDay(NOW - 30 * DAY) + 60 * DAY);
+  });
+
+  it('moves the LATEST completion instead of stacking a new record', () => {
+    const t = task({ intervalDays: 30 });
+    const older = makeCompletion(t.id, NOW - 40 * DAY);
+    const latest = makeCompletion(t.id, NOW - 10 * DAY);
+    const { completions } = withLastDoneAt(t.id, [older, latest], NOW - 3 * DAY);
+    expect(completions).toHaveLength(2);
+    expect(lastDoneAt(t.id, completions)).toBe(NOW - 3 * DAY);
+    expect(completionsFor(t.id, completions).map((c) => c.at)).toEqual([
+      NOW - 3 * DAY,
+      NOW - 40 * DAY,
+    ]);
+  });
+
+  it('ignores tombstoned completions — an undone completion is not resurrected', () => {
+    const t = task({ intervalDays: 30 });
+    const undone = { ...makeCompletion(t.id, NOW - 2 * DAY), deletedAt: NOW };
+    const { completions } = withLastDoneAt(t.id, [undone], NOW - 7 * DAY);
+    expect(completions).toHaveLength(2);
+    expect(lastDoneAt(t.id, completions)).toBe(NOW - 7 * DAY);
+  });
+
+  it('leaves other tasks alone', () => {
+    const t = task({ intervalDays: 30 });
+    const otherDone = makeCompletion('t-other', NOW - 5 * DAY);
+    const { completions } = withLastDoneAt(t.id, [otherDone], NOW - 1 * DAY);
+    expect(lastDoneAt('t-other', completions)).toBe(NOW - 5 * DAY);
+  });
+});
+
+describe('starter-library appliance hints', () => {
+  it('every hint is a clean, non-empty appliance name', () => {
+    for (const item of LIBRARY) {
+      if (item.appliance !== undefined) {
+        expect(item.appliance.trim().length).toBeGreaterThan(0);
+        expect(item.appliance).toBe(item.appliance.trim());
+      }
+    }
+  });
+  it('tasks that name a specific appliance carry its hint', () => {
+    const byId = new Map(LIBRARY.map((i) => [i.id, i]));
+    expect(byId.get('dishwasher-filter')!.appliance).toBe('Dishwasher');
+    expect(byId.get('fridge-coils')!.appliance).toBe('Refrigerator');
+    expect(byId.get('water-heater-flush')!.appliance).toBe('Water heater');
+    expect(byId.get('gutter-clean')!.appliance).toBeUndefined();
   });
 });
 

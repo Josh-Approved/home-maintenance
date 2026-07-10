@@ -1,5 +1,5 @@
 {
-  "$comment": "Screenshot traversal + Tier-2 outcome assertions. Generates qa/flows/mobile.yaml (scripts/qa/compile-flow.mjs); never hand-edit the yaml. Anchors live in qa/selectors.json and target the seeded data (src/qa/fixtures.ts). Three core actions are pinned with outcome assertions: (1) one-tap MARK DONE on the Due list (the undo bar is absent before, present after), (2) ADD FROM LIBRARY (the task is absent from Tasks before, present after), (3) the appliance MANUAL FINDER button is reachable from the seeded appliance.",
+  "$comment": "Screenshot traversal + Tier-2 outcome assertions. Generates qa/flows/mobile.yaml (scripts/qa/compile-flow.mjs); never hand-edit the yaml. Anchors live in qa/selectors.json and target the seeded data (src/qa/fixtures.ts). Four core actions are pinned with outcome assertions: (1) one-tap MARK DONE on the Due list (the undo bar is absent before, present after), (2) ADD FROM LIBRARY (the task is absent from Tasks before, present after), (3) the post-add SETUP step's one-tap appliance create+link (unlinked before, 'Linked to' after), (4) the appliance MANUAL FINDER button is reachable from the seeded appliance.",
   "appId": "com.joshapproved.homemaintenance",
   "clearState": true,
   "diagnosticLaunchShot": true,
@@ -59,6 +59,25 @@
     },
     {
       "tap": "@library-add-one"
+    },
+    {
+      "waitFor": "@setup-title",
+      "timeout": 10000
+    },
+    {
+      "assertNot": "@setup-linked-sump"
+    },
+    {
+      "tap": "@setup-link-sump"
+    },
+    {
+      "assert": "@setup-linked-sump"
+    },
+    {
+      "screenshot": "task-setup"
+    },
+    {
+      "tap": "@setup-done"
     },
     {
       "waitFor": "@add-task-fab",

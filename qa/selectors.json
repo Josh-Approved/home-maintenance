@@ -41,6 +41,22 @@
       "text": "Add 1",
       "note": "the add bar after selecting one library task (i18n library.addOne)"
     },
+    "setup-title": {
+      "text": "Set up your tasks",
+      "note": "TaskSetup header title (i18n setup.title) — the post-add wizard step"
+    },
+    "setup-link-sump": {
+      "text": "Add & link: Sump pump",
+      "note": "the one-tap create+link button's a11y label on the Sump pump suggestion (setup.link + library hint)"
+    },
+    "setup-linked-sump": {
+      "text": ".*Linked to Sump pump.*",
+      "note": "the linked state after the tap (i18n setup.linked) — the Tier-2 outcome proof the appliance was created and linked"
+    },
+    "setup-done": {
+      "text": "Done",
+      "note": "the setup screen's Done bar (i18n setup.done); unique on this screen"
+    },
     "added-task": {
       "text": ".*Test sump pump.*",
       "note": "the added task on the Tasks list. assertNot before / assert after = the library add landed."

@@ -22,6 +22,10 @@ export interface LibraryTask {
   category: CategoryId;
   intervalDays: number;
   note?: string;
+  /** Canonical name of the appliance this task belongs to, when it has one.
+   *  Drives the post-add setup step: match an existing appliance by name or
+   *  offer a one-tap name-only create. Absent for house-level tasks. */
+  appliance?: string;
 }
 
 export const CATEGORY_LABEL_KEYS: Record<CategoryId, string> = {
@@ -40,6 +44,7 @@ export const LIBRARY: LibraryTask[] = [
   // hvac
   {
     id: 'hvac-filter',
+    appliance: 'HVAC system',
     name: 'Replace HVAC filter',
     category: 'hvac',
     intervalDays: 90,
@@ -47,6 +52,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'hvac-outdoor-unit',
+    appliance: 'HVAC system',
     name: 'Clear debris around outdoor AC unit',
     category: 'hvac',
     intervalDays: 90,
@@ -60,6 +66,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'hvac-condensate-line',
+    appliance: 'HVAC system',
     name: 'Flush AC condensate drain line',
     category: 'hvac',
     intervalDays: 180,
@@ -67,6 +74,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'hvac-humidifier-pad',
+    appliance: 'HVAC system',
     name: 'Replace furnace humidifier pad',
     category: 'hvac',
     intervalDays: 365,
@@ -74,6 +82,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'hvac-pro-tuneup',
+    appliance: 'HVAC system',
     name: 'Schedule HVAC tune-up',
     category: 'hvac',
     intervalDays: 365,
@@ -83,6 +92,7 @@ export const LIBRARY: LibraryTask[] = [
   // plumbing
   {
     id: 'garbage-disposal-clean',
+    appliance: 'Garbage disposal',
     name: 'Clean garbage disposal',
     category: 'plumbing',
     intervalDays: 30,
@@ -90,6 +100,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'water-softener-salt',
+    appliance: 'Water softener',
     name: 'Check water softener salt level',
     category: 'plumbing',
     intervalDays: 60,
@@ -97,6 +108,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'sump-pump-test',
+    appliance: 'Sump pump',
     name: 'Test sump pump',
     category: 'plumbing',
     intervalDays: 90,
@@ -132,6 +144,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'water-heater-flush',
+    appliance: 'Water heater',
     name: 'Flush water heater',
     category: 'plumbing',
     intervalDays: 365,
@@ -139,6 +152,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'water-heater-tpr-valve',
+    appliance: 'Water heater',
     name: 'Test water heater pressure relief valve',
     category: 'plumbing',
     intervalDays: 365,
@@ -185,6 +199,7 @@ export const LIBRARY: LibraryTask[] = [
   // appliances
   {
     id: 'dishwasher-filter',
+    appliance: 'Dishwasher',
     name: 'Clean dishwasher filter',
     category: 'appliances',
     intervalDays: 30,
@@ -192,6 +207,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'range-hood-filter',
+    appliance: 'Range hood',
     name: 'Degrease range hood filter',
     category: 'appliances',
     intervalDays: 90,
@@ -199,6 +215,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'fridge-coils',
+    appliance: 'Refrigerator',
     name: 'Vacuum refrigerator coils',
     category: 'appliances',
     intervalDays: 180,
@@ -206,6 +223,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'fridge-door-gaskets',
+    appliance: 'Refrigerator',
     name: 'Check refrigerator door gaskets',
     category: 'appliances',
     intervalDays: 180,
@@ -213,6 +231,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'fridge-water-filter',
+    appliance: 'Refrigerator',
     name: 'Replace refrigerator water filter',
     category: 'appliances',
     intervalDays: 180,
@@ -220,12 +239,14 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'oven-deep-clean',
+    appliance: 'Oven',
     name: 'Deep clean oven',
     category: 'appliances',
     intervalDays: 180,
   },
   {
     id: 'washer-hoses',
+    appliance: 'Washing machine',
     name: 'Inspect washing machine hoses',
     category: 'appliances',
     intervalDays: 180,
@@ -233,6 +254,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'dryer-vent-clean',
+    appliance: 'Dryer',
     name: 'Deep clean dryer vent duct',
     category: 'appliances',
     intervalDays: 365,
@@ -284,6 +306,7 @@ export const LIBRARY: LibraryTask[] = [
   // exterior
   {
     id: 'garage-door-lube',
+    appliance: 'Garage door',
     name: 'Lubricate garage door hardware',
     category: 'exterior',
     intervalDays: 180,
@@ -341,6 +364,7 @@ export const LIBRARY: LibraryTask[] = [
   // yard
   {
     id: 'sprinkler-check',
+    appliance: 'Sprinkler system',
     name: 'Check sprinkler heads and coverage',
     category: 'yard',
     intervalDays: 90,
@@ -375,6 +399,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'mower-blade-sharpen',
+    appliance: 'Lawn mower',
     name: 'Sharpen lawn mower blade',
     category: 'yard',
     intervalDays: 365,
@@ -397,6 +422,7 @@ export const LIBRARY: LibraryTask[] = [
   },
   {
     id: 'garage-door-reverse',
+    appliance: 'Garage door',
     name: 'Test garage door auto-reverse',
     category: 'safety',
     intervalDays: 180,

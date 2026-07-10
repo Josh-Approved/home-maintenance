@@ -18,6 +18,7 @@ import DueScreen from './src/screens/DueScreen';
 import TasksScreen from './src/screens/TasksScreen';
 import TaskEditScreen from './src/screens/TaskEditScreen';
 import LibraryPickerScreen from './src/screens/LibraryPickerScreen';
+import TaskSetupScreen from './src/screens/TaskSetupScreen';
 import AppliancesScreen from './src/screens/AppliancesScreen';
 import ApplianceEditScreen from './src/screens/ApplianceEditScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
@@ -36,6 +37,7 @@ export type RootStackParamList = {
   Tabs: undefined;
   TaskEdit: { taskId?: string; applianceId?: string };
   LibraryPicker: undefined;
+  TaskSetup: { taskIds: string[] };
   ApplianceEdit: { applianceId?: string };
   Acknowledgements: undefined;
 };
@@ -127,6 +129,11 @@ export default function App() {
         <Stack.Screen
           name="LibraryPicker"
           component={LibraryPickerScreen}
+          options={{ presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="TaskSetup"
+          component={TaskSetupScreen}
           options={{ presentation: 'modal' }}
         />
         <Stack.Screen

@@ -13,7 +13,9 @@ import { Square, SquareCheck, PencilLine } from 'lucide-react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../App';
 import { useTasksStore } from '../store/tasks';
+import { useAppliancesStore } from '../store/appliances';
 import { activeTasks } from '../data/task';
+import { activeAppliances } from '../data/appliance';
 import { CATEGORIES, LIBRARY, type LibraryTask } from '../data/library';
 import { intervalText } from '../lib/format';
 import { categoryHue } from '../components/CategoryChip';
@@ -38,6 +40,7 @@ export default function LibraryPickerScreen({ navigation }: Props) {
   const s = makeStyles(c);
   const tasks = useTasksStore((st) => st.tasks);
   const addFromLibrary = useTasksStore((st) => st.addFromLibrary);
+  const appliances = useAppliancesStore((st) => st.appliances);
 
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -68,9 +71,19 @@ export default function LibraryPickerScreen({ navigation }: Props) {
 
   const onAdd = () => {
     const items = LIBRARY.filter((item) => selected.has(item.id));
-    addFromLibrary(items);
+    // Attempt the appliance link up front: an existing appliance whose name
+    // matches the library hint is linked silently; the rest is offered on the
+    // setup step that follows.
+    const byName = new Map(activeAppliances(appliances).map((a) => [a.name.toLowerCase(), a.id]));
+    const ids = addFromLibrary(
+      items.map((item) => ({
+        ...item,
+        applianceId: item.appliance ? byName.get(item.appliance.toLowerCase()) : undefined,
+      }))
+    );
     Keyboard.dismiss();
-    navigation.goBack();
+    if (ids.length > 0) navigation.replace('TaskSetup', { taskIds: ids });
+    else navigation.goBack();
   };
 
   return (
