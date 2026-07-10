@@ -53,6 +53,22 @@
       "text": ".*Linked to Sump pump.*",
       "note": "the linked state after the tap (i18n setup.linked) — the Tier-2 outcome proof the appliance was created and linked"
     },
+    "setup-lastdone-sump": {
+      "text": "Test sump pump: Not set",
+      "note": "the setup step's last-done drill-down row a11y label (DrilldownRow `label: value`)"
+    },
+    "lastdone-title": {
+      "text": "When was this last done?",
+      "note": "LastDoneSheet header title (i18n lastDone.title) — proves the nested sheet Modal opens over the stack modal"
+    },
+    "lastdone-month-chip": {
+      "text": "1 month ago",
+      "note": "quick-pick chip (i18n lastDone.monthAgo)"
+    },
+    "lastdone-save": {
+      "text": "Save",
+      "note": "the sheet's confirm check a11y label (i18n edit.save); no other Save on screen while the sheet is up"
+    },
     "setup-done": {
       "text": "Done",
       "note": "the setup screen's Done bar (i18n setup.done); unique on this screen"

@@ -77,6 +77,22 @@
       "screenshot": "task-setup"
     },
     {
+      "tap": "@setup-lastdone-sump"
+    },
+    {
+      "waitFor": "@lastdone-title",
+      "timeout": 10000
+    },
+    {
+      "tap": "@lastdone-month-chip"
+    },
+    {
+      "tap": "@lastdone-save"
+    },
+    {
+      "assertNot": "@lastdone-title"
+    },
+    {
       "tap": "@setup-done"
     },
     {
