@@ -258,7 +258,7 @@ jobs:
     needs: [detect, unit]
     if: needs.detect.outputs.is-rn == 'true' && needs.detect.outputs.has-flow == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       EXPO_PUBLIC_QA_MODE: '1'
     steps:
