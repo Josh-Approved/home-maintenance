@@ -159,6 +159,27 @@ export function schedules(
     .sort((a, b) => a.dueAt - b.dueAt || a.task.name.localeCompare(b.task.name));
 }
 
+/** Completions with `taskId`'s last-done moved to `at`: the latest active
+ *  completion's `at` is replaced (history stays one honest record per service),
+ *  or a fresh completion is created when the task has none. Returns the
+ *  changed/created completion so callers can persist just that row. */
+export function withLastDoneAt(
+  taskId: string,
+  completions: Completion[],
+  at: number
+): { completions: Completion[]; changed: Completion } {
+  const latest = completionsFor(taskId, completions)[0];
+  if (!latest) {
+    const fresh = makeCompletion(taskId, at);
+    return { completions: [fresh, ...completions], changed: fresh };
+  }
+  const moved = { ...latest, at };
+  return {
+    completions: completions.map((c) => (c.id === latest.id ? moved : c)),
+    changed: moved,
+  };
+}
+
 /** Tasks linked to an appliance, for the appliance detail screen. */
 export function tasksForAppliance(
   applianceId: string,

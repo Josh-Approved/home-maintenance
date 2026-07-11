@@ -42,6 +42,21 @@ appId: com.joshapproved.homemaintenance
 - takeScreenshot: qa/captures/${STORE}/library
 - tapOn: { text: "Add 1" }
 - extendedWaitUntil:
+    visible: { text: "Set up your tasks" }
+    timeout: 10000
+- assertNotVisible: { text: ".*Linked to Sump pump.*" }
+- tapOn: { text: "Add & link: Sump pump" }
+- assertVisible: { text: ".*Linked to Sump pump.*" }
+- takeScreenshot: qa/captures/${STORE}/task-setup
+- tapOn: { text: "Test sump pump: Not set" }
+- extendedWaitUntil:
+    visible: { text: "When was this last done?" }
+    timeout: 10000
+- tapOn: { text: "1 month ago" }
+- tapOn: { text: "Save" }
+- assertNotVisible: { text: "When was this last done?" }
+- tapOn: { text: "Done" }
+- extendedWaitUntil:
     visible: { text: "Add task" }
     timeout: 10000
 - assertVisible: { text: ".*Test sump pump.*" }
