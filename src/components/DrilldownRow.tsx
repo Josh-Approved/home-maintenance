@@ -1,4 +1,6 @@
 /**
+ * Canonical, app-agnostic — synced by `sync.mjs drilldown`; do not fork.
+ *
  * One configurable dimension on a hub screen: label left, current value +
  * chevron right. The row never holds the options themselves — tapping opens
  * that dimension's focused editor (a DrilldownSheet). The value text is the

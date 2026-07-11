@@ -1,4 +1,6 @@
 /**
+ * Canonical, app-agnostic — synced by `sync.mjs drilldown`; do not fork.
+ *
  * The focused editor a DrilldownRow opens — one dimension, one screen. A
  * slide-up full-height sheet with the standard header, so deep option sets
  * get room to breathe instead of crowding the hub inline. Also exports
