@@ -189,13 +189,14 @@ export default function TaskEditScreen({ navigation, route }: Props) {
 
         <Text style={s.label}>{t('edit.note')}</Text>
         <TextInput
-          style={s.input}
+          style={[s.input, s.noteInput]}
           value={note}
           onChangeText={setNote}
           placeholder={t('edit.notePlaceholder')}
           placeholderTextColor={c.fgSubtle}
           accessibilityLabel={t('edit.note')}
-          returnKeyType="done"
+          multiline
+          textAlignVertical="top"
         />
 
         {existing && history.length > 0 ? (
@@ -285,6 +286,11 @@ function makeStyles(c: Colors) {
       ...ty.base,
       fontFamily: fontFamily.sans,
       color: c.fg,
+    },
+    noteInput: {
+      minHeight: target.min * 1.6,
+      paddingTop: space.s3,
+      paddingBottom: space.s3,
     },
     rows: { paddingTop: space.s3 },
     reminderRow: {
