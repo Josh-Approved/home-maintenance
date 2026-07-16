@@ -1,4 +1,4 @@
-# Home Maintenance
+# Home Upkeep
 
 Reminders for the house stuff you always forget, and every appliance's details in one place. Pick from about 60 common maintenance tasks with sensible schedules, mark one done with a tap, and the next due date sets itself. Keep each appliance's brand, model, and serial number handy, and jump straight to a search for its manual.
 
