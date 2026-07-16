@@ -10,7 +10,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.joshapproved.homemaintenance",
       "infoPlist": {
-        "CFBundleName": "Home Upkeep"
+        "CFBundleName": "Home Upkeep",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
