@@ -204,11 +204,12 @@ export default function ApplianceEditScreen({ navigation, route }: Props) {
 
         <Text style={s.label}>{t('appliances.note')}</Text>
         <TextInput
-          style={s.input}
+          style={[s.input, s.noteInput]}
           value={note}
           onChangeText={setNote}
           accessibilityLabel={t('appliances.note')}
-          returnKeyType="done"
+          multiline
+          textAlignVertical="top"
         />
 
         {existing ? (
@@ -288,6 +289,11 @@ function makeStyles(c: Colors) {
       ...ty.base,
       fontFamily: fontFamily.sans,
       color: c.fg,
+    },
+    noteInput: {
+      minHeight: target.min * 1.6,
+      paddingTop: space.s3,
+      paddingBottom: space.s3,
     },
     pairRow: { flexDirection: 'row', gap: space.s4 },
     pairCol: { flex: 1, gap: space.s3 },

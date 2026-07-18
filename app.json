@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Home Maintenance",
+    "name": "Home Upkeep",
     "slug": "home-maintenance",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,7 +10,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.joshapproved.homemaintenance",
       "infoPlist": {
-        "CFBundleName": "Home Maintenance"
+        "CFBundleName": "Home Upkeep",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {

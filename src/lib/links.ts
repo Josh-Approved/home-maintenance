@@ -12,7 +12,7 @@
 import { Linking, Platform } from 'react-native';
 import * as Application from 'expo-application';
 
-export const APP_NAME = 'Home Maintenance - Josh Approved';
+export const APP_NAME = 'Home Upkeep - Josh Approved';
 
 /** Numeric App Store Connect id — filled once the ASC record exists (store
  *  setup). Empty is the known pre-store state; the review deep link no-ops

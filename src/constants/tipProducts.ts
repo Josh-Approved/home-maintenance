@@ -1,5 +1,5 @@
 /**
- * Tip-jar store product ids for Home Maintenance — app-owned (NOT synced from
+ * Tip-jar store product ids for Home Upkeep — app-owned (NOT synced from
  * the factory; each app declares its own). Consumable one-time tips, cheapest
  * → most generous. Ids are reverse-DNS under the bundle id and must match the
  * products created in App Store Connect + Play Console EXACTLY.
