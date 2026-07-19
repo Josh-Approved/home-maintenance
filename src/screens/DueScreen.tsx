@@ -6,7 +6,15 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Text, Pressable, SectionList, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  SectionList,
+  Platform,
+  AccessibilityInfo,
+  StyleSheet,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Circle, CircleCheck } from 'lucide-react-native';
 import type { CompositeScreenProps } from '@react-navigation/native';
@@ -58,6 +66,13 @@ export default function DueScreen({ navigation }: Props) {
   const undoLastDone = useTasksStore((st) => st.undoLastDone);
 
   const [undoFor, setUndoFor] = useState<{ id: string; name: string } | null>(null);
+  // The undo bar's accessibilityLiveRegion covers TalkBack only; VoiceOver
+  // needs an explicit announcement or a marked-done task passes silently.
+  useEffect(() => {
+    if (undoFor && Platform.OS === 'ios') {
+      AccessibilityInfo.announceForAccessibility(`${t('due.doneToast')}: ${undoFor.name}`);
+    }
+  }, [undoFor]);
   const [reviewVisible, setReviewVisible] = useState(false);
   const [tipVisible, setTipVisible] = useState(false);
   const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

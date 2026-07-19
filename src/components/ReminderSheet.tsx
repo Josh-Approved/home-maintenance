@@ -79,14 +79,14 @@ export function ReminderSheet({
   return (
     <DrilldownSheet visible={visible} title={t('edit.reminderTiming')} onClose={onClose}>
       <ScrollView contentContainerStyle={s.body}>
-        <Text style={s.sectionLabel}>{t('edit.firstReminder')}</Text>
+        <Text style={s.sectionLabel} accessibilityRole="header">{t('edit.firstReminder')}</Text>
         <OptionChips
           options={leadChoices.map((p) => ({ key: String(p), label: leadLabel(p) }))}
           selectedKey={String(leadDays)}
           onPick={(k) => onChange({ leadDays: Number(k) })}
         />
 
-        <Text style={s.sectionLabel}>{t('edit.remindAgain')}</Text>
+        <Text style={s.sectionLabel} accessibilityRole="header">{t('edit.remindAgain')}</Text>
         <Text style={s.sectionHint}>{t('edit.remindAgainHint')}</Text>
         <OptionChips
           options={REMINDER_REPEAT_PRESETS.map((p) => ({
@@ -99,7 +99,7 @@ export function ReminderSheet({
 
         {repeatDays != null ? (
           <>
-            <Text style={s.sectionLabel}>{t('edit.stopAfter')}</Text>
+            <Text style={s.sectionLabel} accessibilityRole="header">{t('edit.stopAfter')}</Text>
             <OptionChips
               options={REMINDER_COUNT_PRESETS.map((p) => ({
                 key: p == null ? 'untilDone' : String(p),
