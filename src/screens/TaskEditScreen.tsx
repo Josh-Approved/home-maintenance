@@ -135,6 +135,11 @@ export default function TaskEditScreen({ navigation, route }: Props) {
 
   return (
     <SafeAreaView style={s.safe} edges={['top', 'left', 'right', 'bottom']}>
+      <View
+        style={s.hub}
+        accessibilityElementsHidden={sheet != null}
+        importantForAccessibility={sheet != null ? 'no-hide-descendants' : 'auto'}
+      >
       <ScreenHeader
         title={existing ? t('edit.titleEdit') : t('edit.titleNew')}
         onBack={() => navigation.goBack()}
@@ -252,6 +257,7 @@ export default function TaskEditScreen({ navigation, route }: Props) {
           </Pressable>
         ) : null}
       </ScrollView>
+      </View>
 
       <CategorySheet
         visible={sheet === 'category'}
@@ -304,6 +310,7 @@ export default function TaskEditScreen({ navigation, route }: Props) {
 function makeStyles(c: Colors) {
   return StyleSheet.create({
     safe: { flex: 1, backgroundColor: c.bg },
+    hub: { flex: 1 },
     pressed: { opacity: 0.6 },
     disabled: { opacity: 0.4 },
     saveBtn: {

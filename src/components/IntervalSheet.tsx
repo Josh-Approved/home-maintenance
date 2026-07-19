@@ -11,6 +11,7 @@ import { Check } from 'lucide-react-native';
 import { clampIntervalDays } from '../data/task';
 import { intervalText } from '../lib/format';
 import { DrilldownSheet } from './DrilldownSheet';
+import { OptionChips } from './OptionChips';
 import { t } from '../i18n';
 import {
   useTheme,
@@ -99,26 +100,11 @@ export function IntervalSheet({ visible, value, onClose, onPick }: Props) {
             autoFocus
             returnKeyType="done"
           />
-          <View style={s.unitRow}>
-            {UNITS.map((unit) => (
-              <Pressable
-                key={unit.key}
-                onPress={() => setUnitDays(unit.days)}
-                accessibilityRole="button"
-                accessibilityState={{ selected: unitDays === unit.days }}
-                accessibilityLabel={t(`edit.${unit.key}`)}
-                style={({ pressed }) => [
-                  s.chip,
-                  unitDays === unit.days && s.chipSelected,
-                  pressed && s.pressed,
-                ]}
-              >
-                <Text style={[s.chipText, unitDays === unit.days && s.chipTextSelected]}>
-                  {t(`edit.${unit.key}`)}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
+          <OptionChips
+            options={UNITS.map((unit) => ({ key: String(unit.days), label: t(`edit.${unit.key}`) }))}
+            selectedKey={String(unitDays)}
+            onPick={(k) => setUnitDays(Number(k))}
+          />
         </View>
         {intervalDays != null ? <Text style={s.preview}>{intervalText(intervalDays)}</Text> : null}
       </View>
@@ -150,17 +136,6 @@ function makeStyles(c: Colors) {
       fontSize: 20,
       color: c.fg,
     },
-    unitRow: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s2 },
-    chip: {
-      minHeight: target.min,
-      justifyContent: 'center',
-      paddingHorizontal: space.s4,
-      borderRadius: radius.pill,
-      backgroundColor: c.bgSubtle,
-    },
-    chipSelected: { backgroundColor: c.inkButton },
-    chipText: { ...ty.sm, fontFamily: fontFamily.sans, color: c.fg },
-    chipTextSelected: { color: c.inkButtonText, fontFamily: fontFamily.sansSemibold },
     preview: { ...ty.base, fontFamily: fontFamily.sansSemibold, color: c.fg },
   });
 }

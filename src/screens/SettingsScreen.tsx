@@ -18,7 +18,8 @@ import { useAppliancesStore } from '../store/appliances';
 import { exportData, pickAndParseData } from '../lib/transfer';
 import { AboutRow } from '../components/AboutRow';
 import { LanguageSetting } from '../components/LanguageSetting';
-import { NotifyTimeSetting } from '../components/NotifyTimeSetting';
+import { DrilldownRow } from '../components/DrilldownRow';
+import { useNotifyHour, hourText, NotifyTimePane } from '../components/NotifyTimeSetting';
 import TipJarSheet from '../components/TipJarSheet';
 import { TIP_PRODUCT_IDS } from '../constants/tipProducts';
 import { TIP_JAR_ENABLED } from '../lib/links';
@@ -46,6 +47,8 @@ export default function SettingsScreen({ navigation }: Props) {
   const importAppliances = useAppliancesStore((st) => st.importAppliances);
   const [status, setStatus] = useState<string | null>(null);
   const [tipVisible, setTipVisible] = useState(false);
+  const [notifyHour, pickNotifyHour] = useNotifyHour();
+  const [notifyOpen, setNotifyOpen] = useState(false);
 
   const onExport = useCallback(() => {
     exportData({ tasks, completions, appliances }).catch(() =>
@@ -70,6 +73,11 @@ export default function SettingsScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView style={s.safe} edges={['top', 'left', 'right', 'bottom']}>
+      <View
+        style={s.hub}
+        accessibilityElementsHidden={notifyOpen}
+        importantForAccessibility={notifyOpen ? 'no-hide-descendants' : 'auto'}
+      >
       <View style={s.header}>
         <Text style={s.title}>{t('settings.title')}</Text>
       </View>
@@ -88,7 +96,11 @@ export default function SettingsScreen({ navigation }: Props) {
         <LanguageSetting />
 
         <Text style={s.sectionLabel}>{t('settings.reminders')}</Text>
-        <NotifyTimeSetting />
+        <DrilldownRow
+          label={t('settings.notifyTime')}
+          value={hourText(notifyHour)}
+          onPress={() => setNotifyOpen(true)}
+        />
 
         <Text style={s.sectionLabel}>{t('settings.yourData')}</Text>
         <AboutRow label={t('settings.export')} icon={Upload} onPress={onExport} />
@@ -100,9 +112,16 @@ export default function SettingsScreen({ navigation }: Props) {
           onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined}
         />
       </ScrollView>
+      </View>
       {tipVisible && (
         <TipJarSheet visible onDismiss={() => setTipVisible(false)} productIds={TIP_PRODUCT_IDS} />
       )}
+      <NotifyTimePane
+        visible={notifyOpen}
+        hour={notifyHour}
+        onClose={() => setNotifyOpen(false)}
+        onPick={pickNotifyHour}
+      />
     </SafeAreaView>
   );
 }
@@ -110,6 +129,7 @@ export default function SettingsScreen({ navigation }: Props) {
 function makeStyles(c: Colors) {
   return StyleSheet.create({
     safe: { flex: 1, backgroundColor: c.bg },
+    hub: { flex: 1 },
     header: {
       ...boundedContent,
       flexDirection: 'row',

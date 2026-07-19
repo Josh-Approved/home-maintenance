@@ -1,9 +1,10 @@
 /**
- * Reminder-timing spoke: three preset pickers on one sheet — when the first
+ * Reminder-timing spoke: three preset pickers on one pane — when the first
  * reminder fires (on the due day or ahead of it), whether it repeats while
- * the task stays not-done, and how many follow-ups before going quiet. All
- * presets, no free-form numbers; each tap applies to the hub's draft
- * immediately (single-select rows, like the category spoke).
+ * the task stays not-done, and how many follow-ups before going quiet. Each
+ * group is a short single-select set, so it renders as OptionChips (design
+ * system § Hub-and-spoke drill-downs), applying to the hub's draft
+ * immediately on tap.
  */
 
 import React from 'react';
@@ -13,7 +14,8 @@ import {
   REMINDER_REPEAT_PRESETS,
   REMINDER_COUNT_PRESETS,
 } from '../data/task';
-import { DrilldownSheet, SheetOption } from './DrilldownSheet';
+import { DrilldownSheet } from './DrilldownSheet';
+import { OptionChips } from './OptionChips';
 import { t } from '../i18n';
 import { useTheme, fontFamily, space, type as ty, boundedContent, type Colors } from '../theme';
 
@@ -78,37 +80,34 @@ export function ReminderSheet({
     <DrilldownSheet visible={visible} title={t('edit.reminderTiming')} onClose={onClose}>
       <ScrollView contentContainerStyle={s.body}>
         <Text style={s.sectionLabel}>{t('edit.firstReminder')}</Text>
-        {leadChoices.map((p) => (
-          <SheetOption
-            key={p}
-            label={leadLabel(p)}
-            selected={leadDays === p}
-            onPress={() => onChange({ leadDays: p })}
-          />
-        ))}
+        <OptionChips
+          options={leadChoices.map((p) => ({ key: String(p), label: leadLabel(p) }))}
+          selectedKey={String(leadDays)}
+          onPick={(k) => onChange({ leadDays: Number(k) })}
+        />
 
         <Text style={s.sectionLabel}>{t('edit.remindAgain')}</Text>
         <Text style={s.sectionHint}>{t('edit.remindAgainHint')}</Text>
-        {REMINDER_REPEAT_PRESETS.map((p) => (
-          <SheetOption
-            key={String(p)}
-            label={repeatLabel(p)}
-            selected={repeatDays === p}
-            onPress={() => onChange({ repeatDays: p })}
-          />
-        ))}
+        <OptionChips
+          options={REMINDER_REPEAT_PRESETS.map((p) => ({
+            key: p == null ? 'never' : String(p),
+            label: repeatLabel(p),
+          }))}
+          selectedKey={repeatDays == null ? 'never' : String(repeatDays)}
+          onPick={(k) => onChange({ repeatDays: k === 'never' ? null : Number(k) })}
+        />
 
         {repeatDays != null ? (
           <>
             <Text style={s.sectionLabel}>{t('edit.stopAfter')}</Text>
-            {REMINDER_COUNT_PRESETS.map((p) => (
-              <SheetOption
-                key={String(p)}
-                label={countLabel(p)}
-                selected={repeatCount === p}
-                onPress={() => onChange({ repeatCount: p })}
-              />
-            ))}
+            <OptionChips
+              options={REMINDER_COUNT_PRESETS.map((p) => ({
+                key: p == null ? 'untilDone' : String(p),
+                label: countLabel(p),
+              }))}
+              selectedKey={repeatCount == null ? 'untilDone' : String(repeatCount)}
+              onPick={(k) => onChange({ repeatCount: k === 'untilDone' ? null : Number(k) })}
+            />
           </>
         ) : null}
       </ScrollView>
@@ -118,25 +117,25 @@ export function ReminderSheet({
 
 function makeStyles(c: Colors) {
   return StyleSheet.create({
-    body: { paddingBottom: space.s9 },
-    sectionLabel: {
+    body: {
       ...boundedContent,
+      paddingHorizontal: space.s6,
+      paddingBottom: space.s9,
+    },
+    sectionLabel: {
       ...ty.xs,
       fontFamily: fontFamily.sansSemibold,
       color: c.fgMuted,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
-      paddingHorizontal: space.s6,
       paddingTop: space.s6,
-      paddingBottom: space.s2,
+      paddingBottom: space.s3,
     },
     sectionHint: {
-      ...boundedContent,
       ...ty.sm,
       fontFamily: fontFamily.sans,
       color: c.fgMuted,
-      paddingHorizontal: space.s6,
-      paddingBottom: space.s2,
+      paddingBottom: space.s3,
     },
   });
 }
