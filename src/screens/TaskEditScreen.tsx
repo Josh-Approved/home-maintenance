@@ -27,6 +27,7 @@ import { CategorySheet } from '../components/CategorySheet';
 import { IntervalSheet } from '../components/IntervalSheet';
 import { ApplianceSheet } from '../components/ApplianceSheet';
 import { LastDoneSheet } from '../components/LastDoneSheet';
+import { ReminderSheet, reminderSummary } from '../components/ReminderSheet';
 import { t, formatDate } from '../i18n';
 import {
   useTheme,
@@ -41,7 +42,7 @@ import {
 } from '../theme';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TaskEdit'>;
-type SheetId = 'category' | 'interval' | 'appliance' | 'lastDone' | null;
+type SheetId = 'category' | 'interval' | 'appliance' | 'lastDone' | 'reminderTiming' | null;
 
 export default function TaskEditScreen({ navigation, route }: Props) {
   const { c } = useTheme();
@@ -67,6 +68,13 @@ export default function TaskEditScreen({ navigation, route }: Props) {
     existing?.applianceId ?? prelinkedApplianceId
   );
   const [reminder, setReminder] = useState(existing?.reminder ?? true);
+  const [reminderLeadDays, setReminderLeadDays] = useState(existing?.reminderLeadDays ?? 0);
+  const [reminderRepeatDays, setReminderRepeatDays] = useState<number | null>(
+    existing ? existing.reminderRepeatDays : 7
+  );
+  const [reminderRepeatCount, setReminderRepeatCount] = useState<number | null>(
+    existing ? existing.reminderRepeatCount : 3
+  );
   const [note, setNote] = useState(existing?.note ?? '');
   /** Draft last-done date; applied on save so backing out abandons it. */
   const [lastDone, setLastDoneDraft] = useState<number | null>(existingLastDone);
@@ -89,7 +97,17 @@ export default function TaskEditScreen({ navigation, route }: Props) {
 
   const onSave = () => {
     if (!valid) return;
-    const fields = { name, category, intervalDays, applianceId, reminder, note: note || undefined };
+    const fields = {
+      name,
+      category,
+      intervalDays,
+      applianceId,
+      reminder,
+      reminderLeadDays,
+      reminderRepeatDays,
+      reminderRepeatCount,
+      note: note || undefined,
+    };
     if (existing) {
       updateTask(existing.id, fields);
       if (lastDone != null && lastDone !== existingLastDone) setLastDone(existing.id, lastDone);
@@ -187,6 +205,16 @@ export default function TaskEditScreen({ navigation, route }: Props) {
           />
         </View>
 
+        {reminder ? (
+          <View style={s.rows}>
+            <DrilldownRow
+              label={t('edit.reminderTiming')}
+              value={reminderSummary(reminderLeadDays, reminderRepeatDays)}
+              onPress={() => setSheet('reminderTiming')}
+            />
+          </View>
+        ) : null}
+
         <Text style={s.label}>{t('edit.note')}</Text>
         <TextInput
           style={[s.input, s.noteInput]}
@@ -235,7 +263,11 @@ export default function TaskEditScreen({ navigation, route }: Props) {
         visible={sheet === 'interval'}
         value={intervalDays}
         onClose={() => setSheet(null)}
-        onPick={setIntervalDays}
+        onPick={(days) => {
+          setIntervalDays(days);
+          // A first reminder can't lead by a full interval — keep the receipt honest.
+          if (reminderLeadDays >= days) setReminderLeadDays(0);
+        }}
       />
       <ApplianceSheet
         visible={sheet === 'appliance'}
@@ -251,6 +283,19 @@ export default function TaskEditScreen({ navigation, route }: Props) {
         allowNotDoneYet={history.length === 0}
         onClose={() => setSheet(null)}
         onPick={setLastDoneDraft}
+      />
+      <ReminderSheet
+        visible={sheet === 'reminderTiming'}
+        leadDays={reminderLeadDays}
+        repeatDays={reminderRepeatDays}
+        repeatCount={reminderRepeatCount}
+        intervalDays={intervalDays}
+        onClose={() => setSheet(null)}
+        onChange={(next) => {
+          if (next.leadDays !== undefined) setReminderLeadDays(next.leadDays);
+          if (next.repeatDays !== undefined) setReminderRepeatDays(next.repeatDays);
+          if (next.repeatCount !== undefined) setReminderRepeatCount(next.repeatCount);
+        }}
       />
     </SafeAreaView>
   );

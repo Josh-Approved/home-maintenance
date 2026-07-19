@@ -6,7 +6,13 @@
  */
 
 import { getDb } from '../storage/kv';
-import type { MaintenanceTask, Completion } from '../data/task';
+import {
+  clampLeadDays,
+  clampRepeatDays,
+  clampRepeatCount,
+  type MaintenanceTask,
+  type Completion,
+} from '../data/task';
 import type { Appliance } from '../data/appliance';
 import type { CategoryId } from '../data/library';
 
@@ -25,6 +31,9 @@ async function ensureTables(): Promise<void> {
         anchorAt     INTEGER NOT NULL,
         applianceId  TEXT,
         reminder     INTEGER NOT NULL DEFAULT 1,
+        reminderLeadDays    INTEGER NOT NULL DEFAULT 0,
+        reminderRepeatDays  INTEGER DEFAULT 7,
+        reminderRepeatCount INTEGER DEFAULT 3,
         note         TEXT,
         libraryId    TEXT,
         createdAt    INTEGER NOT NULL,
@@ -51,6 +60,20 @@ async function ensureTables(): Promise<void> {
         deletedAt   INTEGER
       );
     `);
+    // Additive migrations — installs that predate the reminder-timing columns.
+    // Existing rows take the defaults (due day + weekly follow-ups, 3 max),
+    // which reproduces-and-extends the old one-reminder behavior.
+    for (const ddl of [
+      'ALTER TABLE tasks ADD COLUMN reminderLeadDays INTEGER NOT NULL DEFAULT 0',
+      'ALTER TABLE tasks ADD COLUMN reminderRepeatDays INTEGER DEFAULT 7',
+      'ALTER TABLE tasks ADD COLUMN reminderRepeatCount INTEGER DEFAULT 3',
+    ]) {
+      try {
+        await db.execAsync(ddl);
+      } catch {
+        // column already exists
+      }
+    }
   })();
   return _ready;
 }
@@ -63,6 +86,9 @@ interface TaskRow {
   anchorAt: number;
   applianceId: string | null;
   reminder: number;
+  reminderLeadDays: number;
+  reminderRepeatDays: number | null;
+  reminderRepeatCount: number | null;
   note: string | null;
   libraryId: string | null;
   createdAt: number;
@@ -82,6 +108,9 @@ export async function loadAllTasks(): Promise<MaintenanceTask[]> {
     anchorAt: r.anchorAt,
     applianceId: r.applianceId ?? undefined,
     reminder: r.reminder === 1,
+    reminderLeadDays: clampLeadDays(r.reminderLeadDays),
+    reminderRepeatDays: clampRepeatDays(r.reminderRepeatDays),
+    reminderRepeatCount: clampRepeatCount(r.reminderRepeatCount),
     note: r.note ?? undefined,
     libraryId: r.libraryId ?? undefined,
     createdAt: r.createdAt,
@@ -94,11 +123,15 @@ export async function saveTask(t: MaintenanceTask): Promise<void> {
   const db = await getDb();
   await db.runAsync(
     `INSERT OR REPLACE INTO tasks
-       (id, name, category, intervalDays, anchorAt, applianceId, reminder, note, libraryId, createdAt, updatedAt, deletedAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (id, name, category, intervalDays, anchorAt, applianceId, reminder,
+        reminderLeadDays, reminderRepeatDays, reminderRepeatCount,
+        note, libraryId, createdAt, updatedAt, deletedAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       t.id, t.name, t.category, t.intervalDays, t.anchorAt,
-      t.applianceId ?? null, t.reminder ? 1 : 0, t.note ?? null, t.libraryId ?? null,
+      t.applianceId ?? null, t.reminder ? 1 : 0,
+      t.reminderLeadDays, t.reminderRepeatDays, t.reminderRepeatCount,
+      t.note ?? null, t.libraryId ?? null,
       t.createdAt, t.updatedAt, t.deletedAt ?? null,
     ]
   );

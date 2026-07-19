@@ -30,7 +30,18 @@ import { qaTasks, qaCompletions } from '../qa/fixtures';
 
 export type NewTaskFields = Parameters<typeof makeTask>[0];
 export type TaskEdits = Partial<
-  Pick<MaintenanceTask, 'name' | 'category' | 'intervalDays' | 'applianceId' | 'reminder' | 'note'>
+  Pick<
+    MaintenanceTask,
+    | 'name'
+    | 'category'
+    | 'intervalDays'
+    | 'applianceId'
+    | 'reminder'
+    | 'reminderLeadDays'
+    | 'reminderRepeatDays'
+    | 'reminderRepeatCount'
+    | 'note'
+  >
 >;
 
 interface TasksState {

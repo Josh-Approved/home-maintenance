@@ -21,6 +21,9 @@ import {
   withLastDoneAt,
   sanitizeImportedTask,
   sanitizeImportedCompletion,
+  planReminders,
+  MAX_ARMED_PER_TASK,
+  MAX_ARMED_REMINDERS,
   type MaintenanceTask,
 } from '../task';
 import {
@@ -280,5 +283,116 @@ describe('calendar helpers', () => {
     const lateTonight = new Date(2026, 5, 10, 23, 0).getTime();
     const earlyTomorrow = new Date(2026, 5, 11, 1, 0).getTime();
     expect(daysBetween(lateTonight, earlyTomorrow)).toBe(1);
+  });
+});
+
+describe('reminder planner (planReminders)', () => {
+  const at9 = (dayTs: number, hour = 9) => {
+    const d = new Date(dayTs);
+    d.setHours(hour, 0, 0, 0);
+    return d.getTime();
+  };
+
+  it('defaults: fires on the due day, then weekly follow-ups, 3 max', () => {
+    const t1 = task({ anchorAt: NOW - 10 * DAY, intervalDays: 30 });
+    const due = dueAt(t1, []);
+    const plan = planReminders([t1], [], NOW);
+    expect(plan.map((r) => r.kind)).toEqual(['due', 'followUp', 'followUp', 'followUp']);
+    expect(plan[0].at).toBe(at9(due));
+    expect(plan[1].at).toBe(at9(due + 7 * DAY));
+    expect(plan[3].at).toBe(at9(due + 21 * DAY));
+  });
+
+  it('a lead time moves the FIRST reminder ahead of due; follow-ups run from it', () => {
+    const t1 = task({ anchorAt: NOW - 10 * DAY, intervalDays: 60, reminderLeadDays: 7 });
+    const due = dueAt(t1, []);
+    const plan = planReminders([t1], [], NOW);
+    expect(plan[0].at).toBe(at9(due - 7 * DAY));
+    expect(plan[0].kind).toBe('ahead');
+    expect(plan[0].daysBeforeDue).toBe(7);
+    expect(plan[1].at).toBe(at9(due));
+    expect(plan[1].kind).toBe('due');
+  });
+
+  it('never re-arms the past: an overdue task keeps only future follow-ups', () => {
+    const t1 = task({ anchorAt: NOW - 33 * DAY, intervalDays: 30 });
+    const due = dueAt(t1, []);
+    const plan = planReminders([t1], [], NOW);
+    expect(plan.every((r) => r.at > NOW)).toBe(true);
+    expect(plan).toHaveLength(3);
+    expect(plan[0].at).toBe(at9(due + 7 * DAY));
+    expect(plan[0].kind).toBe('followUp');
+  });
+
+  it('repeat "just once": one reminder, and an already-overdue task stays quiet', () => {
+    const upcoming = task({ anchorAt: NOW - 10 * DAY, intervalDays: 30, reminderRepeatDays: null });
+    expect(planReminders([upcoming], [], NOW)).toHaveLength(1);
+    const overdue = task({ anchorAt: NOW - 40 * DAY, intervalDays: 30, reminderRepeatDays: null });
+    expect(planReminders([overdue], [], NOW)).toHaveLength(0);
+  });
+
+  it('"until done" keeps going but is capped per task', () => {
+    const t1 = task({
+      anchorAt: NOW - 29 * DAY,
+      intervalDays: 30,
+      reminderRepeatDays: 1,
+      reminderRepeatCount: null,
+    });
+    expect(planReminders([t1], [], NOW)).toHaveLength(MAX_ARMED_PER_TASK);
+  });
+
+  it('stop-after count is honored', () => {
+    const t1 = task({ anchorAt: NOW - 10 * DAY, intervalDays: 30, reminderRepeatCount: 1 });
+    expect(planReminders([t1], [], NOW)).toHaveLength(2);
+  });
+
+  it('lead is clamped inside the repeat interval', () => {
+    const t1 = task({ anchorAt: NOW, intervalDays: 3, reminderLeadDays: 30, reminderRepeatDays: null });
+    const due = dueAt(t1, []);
+    const plan = planReminders([t1], [], NOW);
+    expect(plan[0].at).toBe(at9(due - 2 * DAY));
+  });
+
+  it('reminder-off tasks are excluded; the global set is sorted and capped', () => {
+    expect(planReminders([task({ reminder: false, anchorAt: NOW - 10 * DAY })], [], NOW)).toHaveLength(0);
+    const many = Array.from({ length: 40 }, (_, i) =>
+      task({ name: `t${i}`, anchorAt: NOW - i * DAY, intervalDays: 60 })
+    );
+    const plan = planReminders(many, [], NOW);
+    expect(plan).toHaveLength(MAX_ARMED_REMINDERS);
+    for (let i = 1; i < plan.length; i++) expect(plan[i].at).toBeGreaterThanOrEqual(plan[i - 1].at);
+  });
+
+  it('respects the app-wide notify hour', () => {
+    const t1 = task({ anchorAt: NOW - 10 * DAY, intervalDays: 30 });
+    const plan = planReminders([t1], [], NOW, 18);
+    expect(new Date(plan[0].at).getHours()).toBe(18);
+  });
+
+  it('completing a task rolls the whole series to the next cycle', () => {
+    const t1 = task({ anchorAt: NOW - 33 * DAY, intervalDays: 30 });
+    const done = makeCompletion(t1.id, NOW);
+    const plan = planReminders([t1], [done], NOW);
+    expect(plan[0].at).toBe(at9(dueAt(t1, [done])));
+    expect(plan[0].kind).toBe('due');
+  });
+
+  it('import sanitizer clamps reminder timing and defaults absent keys', () => {
+    const got = sanitizeImportedTask(
+      {
+        name: 'X',
+        intervalDays: 30,
+        reminderLeadDays: -4,
+        reminderRepeatDays: 'weekly',
+        reminderRepeatCount: 2.6,
+      },
+      CATEGORIES
+    )!;
+    expect(got.task.reminderLeadDays).toBe(0);
+    expect(got.task.reminderRepeatDays).toBeNull();
+    expect(got.task.reminderRepeatCount).toBe(3);
+    const legacy = sanitizeImportedTask({ name: 'Y', intervalDays: 30 }, CATEGORIES)!;
+    expect(legacy.task.reminderRepeatDays).toBe(7);
+    expect(legacy.task.reminderRepeatCount).toBe(3);
   });
 });

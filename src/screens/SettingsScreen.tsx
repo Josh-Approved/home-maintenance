@@ -18,6 +18,7 @@ import { useAppliancesStore } from '../store/appliances';
 import { exportData, pickAndParseData } from '../lib/transfer';
 import { AboutRow } from '../components/AboutRow';
 import { LanguageSetting } from '../components/LanguageSetting';
+import { NotifyTimeSetting } from '../components/NotifyTimeSetting';
 import TipJarSheet from '../components/TipJarSheet';
 import { TIP_PRODUCT_IDS } from '../constants/tipProducts';
 import { TIP_JAR_ENABLED } from '../lib/links';
@@ -85,6 +86,9 @@ export default function SettingsScreen({ navigation }: Props) {
 
         <Text style={s.sectionLabel}>{t('settings.language')}</Text>
         <LanguageSetting />
+
+        <Text style={s.sectionLabel}>{t('settings.reminders')}</Text>
+        <NotifyTimeSetting />
 
         <Text style={s.sectionLabel}>{t('settings.yourData')}</Text>
         <AboutRow label={t('settings.export')} icon={Upload} onPress={onExport} />

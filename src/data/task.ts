@@ -27,6 +27,13 @@ export interface MaintenanceTask {
   applianceId?: string;
   /** Per-task local reminder opt-in. */
   reminder: boolean;
+  /** Days before the due day the FIRST reminder fires. 0 = on the due day. */
+  reminderLeadDays: number;
+  /** Days between follow-up reminders after the first, while the task stays
+   *  not-done. null = just the one reminder. */
+  reminderRepeatDays: number | null;
+  /** How many follow-ups before going quiet. null = keep reminding until done. */
+  reminderRepeatCount: number | null;
   note?: string;
   /** Provenance when added from the starter library. */
   libraryId?: string;
@@ -62,9 +69,51 @@ export function clampIntervalDays(n: number): number {
   return Math.min(MAX_INTERVAL_DAYS, Math.max(MIN_INTERVAL_DAYS, Math.round(n)));
 }
 
+// ---------- Reminder timing (presets, defaults, clamps) ----------
+
+/** First-reminder offsets offered in the UI, in days before due. */
+export const REMINDER_LEAD_PRESETS = [0, 1, 3, 7, 14, 30] as const;
+/** Follow-up cadences offered in the UI. null = just the one reminder. */
+export const REMINDER_REPEAT_PRESETS = [null, 1, 3, 7] as const;
+/** Follow-up counts offered in the UI. null = keep reminding until done. */
+export const REMINDER_COUNT_PRESETS = [1, 3, 5, null] as const;
+
+export const DEFAULT_REMINDER_LEAD_DAYS = 0;
+export const DEFAULT_REMINDER_REPEAT_DAYS = 7;
+export const DEFAULT_REMINDER_REPEAT_COUNT = 3;
+
+export function clampLeadDays(n: unknown): number {
+  if (typeof n !== 'number' || !Number.isFinite(n)) return DEFAULT_REMINDER_LEAD_DAYS;
+  return Math.min(365, Math.max(0, Math.round(n)));
+}
+
+/** null (and garbage) mean "never repeat" — the quiet, safe reading. */
+export function clampRepeatDays(n: unknown): number | null {
+  if (typeof n !== 'number' || !Number.isFinite(n)) return null;
+  return Math.min(365, Math.max(1, Math.round(n)));
+}
+
+/** null (and garbage) mean "until done". */
+export function clampRepeatCount(n: unknown): number | null {
+  if (typeof n !== 'number' || !Number.isFinite(n)) return null;
+  return Math.min(99, Math.max(1, Math.round(n)));
+}
+
 export function makeTask(
   fields: Pick<MaintenanceTask, 'name' | 'category' | 'intervalDays'> &
-    Partial<Pick<MaintenanceTask, 'applianceId' | 'reminder' | 'note' | 'libraryId' | 'anchorAt'>>
+    Partial<
+      Pick<
+        MaintenanceTask,
+        | 'applianceId'
+        | 'reminder'
+        | 'reminderLeadDays'
+        | 'reminderRepeatDays'
+        | 'reminderRepeatCount'
+        | 'note'
+        | 'libraryId'
+        | 'anchorAt'
+      >
+    >
 ): MaintenanceTask {
   const now = Date.now();
   return {
@@ -75,6 +124,15 @@ export function makeTask(
     anchorAt: fields.anchorAt ?? now,
     applianceId: fields.applianceId,
     reminder: fields.reminder ?? true,
+    reminderLeadDays: clampLeadDays(fields.reminderLeadDays ?? DEFAULT_REMINDER_LEAD_DAYS),
+    reminderRepeatDays:
+      fields.reminderRepeatDays === undefined
+        ? DEFAULT_REMINDER_REPEAT_DAYS
+        : clampRepeatDays(fields.reminderRepeatDays),
+    reminderRepeatCount:
+      fields.reminderRepeatCount === undefined
+        ? DEFAULT_REMINDER_REPEAT_COUNT
+        : clampRepeatCount(fields.reminderRepeatCount),
     note: fields.note?.trim() ? fields.note.trim() : undefined,
     libraryId: fields.libraryId,
     createdAt: now,
@@ -159,6 +217,74 @@ export function schedules(
     .sort((a, b) => a.dueAt - b.dueAt || a.task.name.localeCompare(b.task.name));
 }
 
+// ---------- Reminder planner (pure — the scheduling layer just executes it) ----------
+
+/** iOS caps pending local notifications at 64; stay under it with headroom. */
+export const MAX_ARMED_REMINDERS = 56;
+/** Per-task ceiling so one "until done" task can't crowd out the rest. */
+export const MAX_ARMED_PER_TASK = 6;
+/** Iteration bound for "until done" series — reschedules refresh the tail. */
+const MAX_UNTIL_DONE_STEPS = 60;
+
+export const DEFAULT_NOTIFY_HOUR = 9;
+
+/** The given calendar day at `hour` o'clock, local time. */
+export function atHour(dayTs: number, hour: number): number {
+  const d = new Date(dayTs);
+  d.setHours(hour, 0, 0, 0);
+  return d.getTime();
+}
+
+export type ReminderKind = 'ahead' | 'due' | 'followUp';
+
+export interface PlannedReminder {
+  taskId: string;
+  taskName: string;
+  /** Fire instant (ms, local). Always in the future relative to plan time. */
+  at: number;
+  kind: ReminderKind;
+  /** Whole days from this reminder to the due day (positive = early). */
+  daysBeforeDue: number;
+}
+
+/**
+ * Decide every local notification to arm, from schedule state alone. The
+ * series for a task is: first reminder at (due − lead) days, then follow-ups
+ * every `reminderRepeatDays` until the count runs out (null = until done).
+ * Deterministic from (tasks, completions, now) — no marks or side state:
+ * instants in the past are simply never re-armed, so calling this on every
+ * mutation/open is safe and can never nag. Soonest-first, capped globally.
+ */
+export function planReminders(
+  tasks: MaintenanceTask[],
+  completions: Completion[],
+  now: number,
+  notifyHour: number = DEFAULT_NOTIFY_HOUR
+): PlannedReminder[] {
+  const out: PlannedReminder[] = [];
+  for (const s of schedules(tasks, completions, now)) {
+    if (!s.task.reminder) continue;
+    const interval = clampIntervalDays(s.task.intervalDays);
+    // A first reminder a full interval early would predate the previous cycle.
+    const lead = Math.min(clampLeadDays(s.task.reminderLeadDays), interval - 1);
+    const repeat = clampRepeatDays(s.task.reminderRepeatDays);
+    const count = clampRepeatCount(s.task.reminderRepeatCount);
+    const firstDay = s.dueAt - lead * DAY;
+    const steps = repeat == null ? 0 : (count ?? MAX_UNTIL_DONE_STEPS);
+    let armed = 0;
+    for (let k = 0; k <= steps && armed < MAX_ARMED_PER_TASK; k++) {
+      const day = firstDay + (repeat ?? 0) * k * DAY;
+      const at = atHour(day, notifyHour);
+      if (at <= now) continue; // already fired or missed — never re-arm the past
+      const daysBeforeDue = daysBetween(day, s.dueAt);
+      const kind: ReminderKind = daysBeforeDue > 0 ? 'ahead' : daysBeforeDue === 0 ? 'due' : 'followUp';
+      out.push({ taskId: s.task.id, taskName: s.task.name, at, kind, daysBeforeDue });
+      armed++;
+    }
+  }
+  return out.sort((a, b) => a.at - b.at).slice(0, MAX_ARMED_REMINDERS);
+}
+
 /** Completions with `taskId`'s last-done moved to `at`: the latest active
  *  completion's `at` is replaced (history stays one honest record per service),
  *  or a fresh completion is created when the task has none. Returns the
@@ -208,6 +334,10 @@ export function sanitizeImportedTask(
     category,
     intervalDays: r.intervalDays,
     reminder: typeof r.reminder === 'boolean' ? r.reminder : true,
+    // Absent keys (older exports) fall to the defaults; present keys clamp.
+    reminderLeadDays: 'reminderLeadDays' in r ? clampLeadDays(r.reminderLeadDays) : undefined,
+    reminderRepeatDays: 'reminderRepeatDays' in r ? clampRepeatDays(r.reminderRepeatDays) : undefined,
+    reminderRepeatCount: 'reminderRepeatCount' in r ? clampRepeatCount(r.reminderRepeatCount) : undefined,
     note: typeof r.note === 'string' ? r.note : undefined,
     libraryId: typeof r.libraryId === 'string' ? r.libraryId : undefined,
     anchorAt: typeof r.anchorAt === 'number' ? r.anchorAt : undefined,
