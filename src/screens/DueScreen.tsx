@@ -27,11 +27,9 @@ import { dueText } from '../lib/format';
 import { CategoryChip } from '../components/CategoryChip';
 import { EmptyState } from '../components/EmptyState';
 import { FundingFooter } from '../components/FundingFooter';
-import ReviewModal from '../components/ReviewModal';
-import { recordSuccessfulCompletion } from '../storage/reviewPrompt';
 import TipJarSheet from '../components/TipJarSheet';
 import { TIP_PRODUCT_IDS } from '../constants/tipProducts';
-import { APP_NAME, IOS_APP_STORE_ID, ANDROID_PACKAGE, TIP_JAR_ENABLED } from '../lib/links';
+import { TIP_JAR_ENABLED } from '../lib/links';
 import { t } from '../i18n';
 import {
   useTheme,
@@ -73,7 +71,6 @@ export default function DueScreen({ navigation }: Props) {
       AccessibilityInfo.announceForAccessibility(`${t('due.doneToast')}: ${undoFor.name}`);
     }
   }, [undoFor]);
-  const [reviewVisible, setReviewVisible] = useState(false);
   const [tipVisible, setTipVisible] = useState(false);
   const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(
@@ -89,13 +86,6 @@ export default function DueScreen({ navigation }: Props) {
       setUndoFor({ id: sched.task.id, name: sched.task.name });
       if (undoTimer.current) clearTimeout(undoTimer.current);
       undoTimer.current = setTimeout(() => setUndoFor(null), 6000);
-      // Marking a task done is this app's genuine "satisfying success" — the
-      // canonical review prompt's only trigger (never on launch/error).
-      recordSuccessfulCompletion()
-        .then((show) => {
-          if (show) setReviewVisible(true);
-        })
-        .catch(() => {});
     },
     [markDone]
   );
@@ -204,13 +194,6 @@ export default function DueScreen({ navigation }: Props) {
         </View>
       ) : null}
 
-      <ReviewModal
-        visible={reviewVisible}
-        onDismiss={() => setReviewVisible(false)}
-        appName={APP_NAME}
-        iosAppStoreId={IOS_APP_STORE_ID}
-        androidPackageName={ANDROID_PACKAGE}
-      />
       {tipVisible && (
         <TipJarSheet visible onDismiss={() => setTipVisible(false)} productIds={TIP_PRODUCT_IDS} />
       )}
