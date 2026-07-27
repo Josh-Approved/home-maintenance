@@ -139,7 +139,7 @@
     {
       "id": "components/ScreenHeader#common.back",
       "label": "common.back",
-      "where": "src/components/ScreenHeader.tsx:35",
+      "where": "src/components/ScreenHeader.tsx:38",
       "proof": {
         "kind": "none"
       },
@@ -206,12 +206,13 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label",
+      "stale": true
     },
     {
       "id": "screens/ApplianceEditScreen#appliances.addlinkedtask",
       "label": "appliances.addLinkedTask",
-      "where": "src/screens/ApplianceEditScreen.tsx:236",
+      "where": "src/screens/ApplianceEditScreen.tsx:237",
       "proof": {
         "kind": "none"
       },
@@ -220,7 +221,7 @@
     {
       "id": "screens/ApplianceEditScreen#appliances.delete",
       "label": "appliances.delete",
-      "where": "src/screens/ApplianceEditScreen.tsx:246",
+      "where": "src/screens/ApplianceEditScreen.tsx:247",
       "proof": {
         "kind": "none"
       },
@@ -247,7 +248,7 @@
     {
       "id": "screens/DueScreen#due.emptynotaskscta",
       "label": "due.emptyNoTasksCta",
-      "where": "src/screens/DueScreen.tsx:117",
+      "where": "src/screens/DueScreen.tsx:132",
       "proof": {
         "kind": "none"
       },
@@ -260,7 +261,8 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label",
+      "stale": true
     },
     {
       "id": "screens/DueScreen#pressable-155",
@@ -269,12 +271,13 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label",
+      "stale": true
     },
     {
       "id": "screens/DueScreen#due.undo",
       "label": "due.undo",
-      "where": "src/screens/DueScreen.tsx:180",
+      "where": "src/screens/DueScreen.tsx:195",
       "proof": {
         "kind": "none"
       },
@@ -283,7 +286,7 @@
     {
       "id": "screens/LibraryPickerScreen#tasks.custom",
       "label": "tasks.custom",
-      "where": "src/screens/LibraryPickerScreen.tsx:80",
+      "where": "src/screens/LibraryPickerScreen.tsx:93",
       "proof": {
         "kind": "none"
       },
@@ -292,7 +295,7 @@
     {
       "id": "screens/LibraryPickerScreen#library.search",
       "label": "library.search",
-      "where": "src/screens/LibraryPickerScreen.tsx:90",
+      "where": "src/screens/LibraryPickerScreen.tsx:103",
       "proof": {
         "kind": "none"
       },
@@ -305,7 +308,8 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label",
+      "stale": true
     },
     {
       "id": "screens/LibraryPickerScreen#pressable-149",
@@ -314,12 +318,13 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label",
+      "stale": true
     },
     {
       "id": "screens/TaskEditScreen#edit.save",
       "label": "edit.save",
-      "where": "src/screens/TaskEditScreen.tsx:138",
+      "where": "src/screens/TaskEditScreen.tsx:147",
       "proof": {
         "kind": "none"
       },
@@ -332,7 +337,8 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress",
+      "stale": true
     },
     {
       "id": "screens/TaskEditScreen#edit.-unit.key",
@@ -341,7 +347,8 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress",
+      "stale": true
     },
     {
       "id": "screens/TaskEditScreen#pressable-227",
@@ -350,7 +357,8 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label",
+      "stale": true
     },
     {
       "id": "screens/TaskEditScreen#edit.appliancenone",
@@ -359,7 +367,8 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress",
+      "stale": true
     },
     {
       "id": "screens/TaskEditScreen#pressable-268",
@@ -368,12 +377,13 @@
       "proof": {
         "kind": "none"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label",
+      "stale": true
     },
     {
       "id": "screens/TaskEditScreen#edit.reminder",
       "label": "edit.reminder",
-      "where": "src/screens/TaskEditScreen.tsx:294",
+      "where": "src/screens/TaskEditScreen.tsx:206",
       "proof": {
         "kind": "none"
       },
@@ -382,7 +392,7 @@
     {
       "id": "screens/TaskEditScreen#edit.delete",
       "label": "edit.delete",
-      "where": "src/screens/TaskEditScreen.tsx:327",
+      "where": "src/screens/TaskEditScreen.tsx:250",
       "proof": {
         "kind": "none"
       },
@@ -401,6 +411,276 @@
       "id": "screens/TasksScreen#tasks.add",
       "label": "tasks.add",
       "where": "src/screens/TasksScreen.tsx:111",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/ApplianceSheet#edit.appliancenew",
+      "label": "edit.applianceNew",
+      "where": "src/components/ApplianceSheet.tsx:84",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "TextInput · onSubmitEditing"
+    },
+    {
+      "id": "components/ApplianceSheet#edit.appliancecreate",
+      "label": "edit.applianceCreate",
+      "where": "src/components/ApplianceSheet.tsx:94",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/Dialogs#common.closemenu",
+      "label": "common.closeMenu",
+      "where": "src/components/Dialogs.tsx:110",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/Dialogs#pressable-116",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/Dialogs.tsx:116",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "components/Dialogs#pressable-123",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/Dialogs.tsx:123",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "components/Dialogs#common.cancel",
+      "label": "common.cancel",
+      "where": "src/components/Dialogs.tsx:135",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/Dialogs#common.cancel-2",
+      "label": "common.cancel",
+      "where": "src/components/Dialogs.tsx:212",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/Dialogs#pressable-218",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/Dialogs.tsx:218",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "components/Dialogs#textinput-223",
+      "label": "TextInput (dynamic label)",
+      "where": "src/components/Dialogs.tsx:223",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "TextInput · onSubmitEditing · dynamic/child-text label"
+    },
+    {
+      "id": "components/Dialogs#common.cancel-3",
+      "label": "common.cancel",
+      "where": "src/components/Dialogs.tsx:238",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/Dialogs#pressable-246",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/Dialogs.tsx:246",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "components/Dialogs#common.cancel-4",
+      "label": "common.cancel",
+      "where": "src/components/Dialogs.tsx:311",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/Dialogs#pressable-317",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/Dialogs.tsx:317",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "components/Dialogs#common.cancel-5",
+      "label": "common.cancel",
+      "where": "src/components/Dialogs.tsx:323",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/Dialogs#pressable-331",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/Dialogs.tsx:331",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "components/DrilldownRow#pressable-35",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/DrilldownRow.tsx:35",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "components/DrilldownSheet#pressable-153",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/DrilldownSheet.tsx:153",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "components/IntervalSheet#edit.save",
+      "label": "edit.save",
+      "where": "src/components/IntervalSheet.tsx:80",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/LastDoneSheet#edit.save",
+      "label": "edit.save",
+      "where": "src/components/LastDoneSheet.tsx:93",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/LastDoneSheet#pressable-118",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/LastDoneSheet.tsx:118",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "components/LastDoneSheet#lastdone.dayearlier",
+      "label": "lastDone.dayEarlier",
+      "where": "src/components/LastDoneSheet.tsx:133",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/LastDoneSheet#lastdone.daylater",
+      "label": "lastDone.dayLater",
+      "where": "src/components/LastDoneSheet.tsx:144",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress"
+    },
+    {
+      "id": "components/OptionChips#pressable-41",
+      "label": "Pressable (dynamic label)",
+      "where": "src/components/OptionChips.tsx:41",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "screens/ApplianceEditScreen#pressable-222",
+      "label": "Pressable (dynamic label)",
+      "where": "src/screens/ApplianceEditScreen.tsx:222",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "screens/DueScreen#pressable-161",
+      "label": "Pressable (dynamic label)",
+      "where": "src/screens/DueScreen.tsx:161",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "screens/DueScreen#pressable-170",
+      "label": "Pressable (dynamic label)",
+      "where": "src/screens/DueScreen.tsx:170",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "screens/LibraryPickerScreen#pressable-134",
+      "label": "Pressable (dynamic label)",
+      "where": "src/screens/LibraryPickerScreen.tsx:134",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "screens/LibraryPickerScreen#pressable-162",
+      "label": "Pressable (dynamic label)",
+      "where": "src/screens/LibraryPickerScreen.tsx:162",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "screens/TaskSetupScreen#pressable-138",
+      "label": "Pressable (dynamic label)",
+      "where": "src/screens/TaskSetupScreen.tsx:138",
+      "proof": {
+        "kind": "none"
+      },
+      "note": "Pressable · onPress · dynamic/child-text label"
+    },
+    {
+      "id": "screens/TaskSetupScreen#setup.done",
+      "label": "setup.done",
+      "where": "src/screens/TaskSetupScreen.tsx:173",
       "proof": {
         "kind": "none"
       },
