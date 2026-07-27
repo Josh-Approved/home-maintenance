@@ -11,6 +11,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react-native';
 import { Text, AccessibilityInfo } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 jest.mock('expo-font', () => ({
   useFonts: () => [true, null],
@@ -37,11 +38,21 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
+// The pane is absolutely positioned, so it applies its OWN safe-area insets
+// (a parent SafeAreaView's padding never reaches it) — which means it needs a
+// provider above it, exactly as the real app root supplies one.
+const METRICS = {
+  frame: { x: 0, y: 0, width: 390, height: 844 },
+  insets: { top: 59, left: 0, right: 0, bottom: 34 },
+};
+
 function renderPane(visible: boolean) {
   return render(
-    <DrilldownSheet visible={visible} title="Timing" onClose={() => {}}>
-      <Text>pane content</Text>
-    </DrilldownSheet>
+    <SafeAreaProvider initialMetrics={METRICS}>
+      <DrilldownSheet visible={visible} title="Timing" onClose={() => {}}>
+        <Text>pane content</Text>
+      </DrilldownSheet>
+    </SafeAreaProvider>
   );
 }
 
