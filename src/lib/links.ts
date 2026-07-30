@@ -20,16 +20,12 @@ export const APP_NAME = 'Home Upkeep - Josh Approved';
 export const IOS_APP_STORE_ID = '';
 export const ANDROID_PACKAGE = 'com.joshapproved.homemaintenance';
 
-export const BMAC_URL = 'https://buymeacoffee.com/jtysonwilliams';
-
 /**
- * DONATIONS_ENABLED gates every Buy Me a Coffee surface. It stays false --
- * Apple rejects external donation links for a for-profit app (guideline
- * 3.1.1); the IAP tip jar replaces the link-out.
- * TIP_JAR_ENABLED gates the sanctioned replacement: the same support
- * placements, each opening the canonical TipJarSheet.
+ * TIP_JAR_ENABLED gates every support surface (Settings row, FundingFooter
+ * button) — each opens the canonical TipJarSheet. Apple rejects external
+ * donation links for a for-profit app (guideline 3.1.1), so the IAP tip jar
+ * is the only support surface; there is no external link-out to gate.
  */
-export const DONATIONS_ENABLED: boolean = false;
 export const TIP_JAR_ENABLED: boolean = true;
 export const STUDIO_URL = 'https://joshapproved.com';
 export const REPO_URL = 'https://github.com/josh-approved/home-maintenance';
@@ -45,10 +41,6 @@ export function versionLabel(): string {
 
 export function openUrl(url: string): void {
   Linking.openURL(url).catch(() => {});
-}
-
-export function openBmac(): void {
-  openUrl(BMAC_URL);
 }
 
 export function openFeedbackMail(): void {

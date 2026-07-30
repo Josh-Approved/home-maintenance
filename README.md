@@ -31,4 +31,4 @@ MIT — see [LICENSE](LICENSE).
 
 ## Feedback
 
-Email [feedback@joshapproved.com](mailto:feedback@joshapproved.com). If this app is useful to you, you can support it at [buymeacoffee.com/jtysonwilliams](https://buymeacoffee.com/jtysonwilliams).
+Email [feedback@joshapproved.com](mailto:feedback@joshapproved.com). If this app is useful to you, there's an optional tip jar in the app.
