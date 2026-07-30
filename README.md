@@ -27,7 +27,7 @@ Your data stays with you. No accounts, no tracking, no analytics. Reminders are 
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
 
 ## Feedback
 
