@@ -1,5 +1,5 @@
-// Canonical Josh Approved tip-jar sheet — the in-app tip jar UI (the IAP
-// replacement for the rejected Buy Me a Coffee link-out).
+// Canonical Josh Approved tip-jar sheet — the in-app tip jar UI (the studio's
+// IAP funding surface; Apple 3.1.1 forbids external donation link-outs).
 // Source: josh-approved-factory/templates/tip-jar/TipJarSheet.tsx
 // Pairs with tipJar.ts. See README.md for canonical rules and wiring.
 //
