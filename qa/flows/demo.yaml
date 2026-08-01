@@ -1,0 +1,48 @@
+# Hand-authored DEMO flow for the store/README GIF — the core loop: Due tells
+# you what the house needs now, one tap marks it done, and the next date is set
+# for you. NOT the generated screenshot journey (qa/flows/mobile.yaml), which
+# walks the whole app for stills and is far too long/slow for a demo. Kept
+# human-paced and held on each state long enough to read. Driven headless by
+# josh-approved-factory/scripts/demo-capture.mjs (records the run + composites it
+# into the signature device frame). Runs against the QA_MODE build, which seeds
+# the overdue "Replace HVAC filter" task (src/qa/fixtures.ts: 110d ago on a 90d
+# interval) and the task library.
+appId: com.joshapproved.homemaintenance
+---
+- launchApp:
+    clearState: true
+- waitForAnimationToEnd:
+    timeout: 4000
+- extendedWaitUntil:
+    visible:
+      text: "Due"
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      text: "Overdue"
+    timeout: 15000
+# Hold on the Due list — overdue first, then what is coming.
+- waitForAnimationToEnd:
+    timeout: 2800
+# One tap on the Done circle. The undo bar confirms it and the task rolls to its
+# next date.
+- tapOn:
+    text: "Done: Replace HVAC filter"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      text: ".*Marked done.*"
+    timeout: 8000
+- waitForAnimationToEnd:
+    timeout: 2600
+# Then the full task list, so the demo shows there is a whole house behind the
+# short Due list.
+- tapOn:
+    id: "tab-tasks"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      text: "Add task"
+    timeout: 10000
+- waitForAnimationToEnd:
+    timeout: 3200
