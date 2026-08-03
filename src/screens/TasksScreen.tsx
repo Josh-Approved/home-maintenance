@@ -123,7 +123,7 @@ export default function TasksScreen({ navigation }: Props) {
   );
 }
 
-function makeStyles(c: Colors) {
+export function makeStyles(c: Colors) {
   return StyleSheet.create({
     safe: { flex: 1, backgroundColor: c.bg },
     pressed: { opacity: 0.6 },
