@@ -10,7 +10,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { CATEGORIES, type CategoryId } from '../data/library';
 import { t } from '../i18n';
-import { useTheme, fontFamily, space, categoryColor, CATEGORY_COLOR_TOKENS } from '../theme';
+import { useTheme, fontFamily, space, type as ty, categoryColor, CATEGORY_COLOR_TOKENS } from '../theme';
 
 export function categoryHue(category: CategoryId): string {
   const token = CATEGORY_COLOR_TOKENS[CATEGORIES.indexOf(category) % CATEGORY_COLOR_TOKENS.length];
@@ -32,5 +32,5 @@ export function CategoryChip({ category }: { category: CategoryId }) {
 const styles = StyleSheet.create({
   chip: { flexDirection: 'row', alignItems: 'center', gap: space.s2 },
   dot: { width: 8, height: 8, borderRadius: 4 },
-  label: { fontSize: 12, lineHeight: 16 },
+  label: { ...ty.xs },
 });

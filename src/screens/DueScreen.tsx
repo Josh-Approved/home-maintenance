@@ -179,7 +179,7 @@ export default function DueScreen({ navigation }: Props) {
       {undoFor ? (
         <View style={s.undoBar} accessibilityLiveRegion="polite">
           <CircleCheck size={18} color={c.inkButtonText} strokeWidth={2} />
-          <Text style={s.undoText} numberOfLines={1}>
+          <Text style={s.undoText} numberOfLines={2}>
             {t('due.doneToast')}: {undoFor.name}
           </Text>
           <Pressable
