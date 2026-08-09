@@ -7,6 +7,7 @@ import { create } from 'zustand';
 import { type Appliance, makeAppliance } from '../data/appliance';
 import { putTombstone } from '../storage/kv';
 import { loadAllAppliances, saveAppliance, hardDelete } from './db';
+import { logEvent, logError } from '../feedback/log';
 import { QA_MODE } from '../qa/qaMode';
 import { qaAppliances } from '../qa/fixtures';
 
@@ -41,8 +42,10 @@ export const useAppliancesStore = create<AppliancesState>()((set, get) => ({
         set({ appliances: qaAppliances(), hydrated: true });
         return;
       }
+      logEvent('appliances', 'hydrated', { appliances: loaded.length });
       set({ appliances: loaded, hydrated: true });
     } catch (err) {
+      logError('appliances', err, { during: 'hydrate' });
       console.warn('home-maintenance: failed to load appliances', err);
       set({ hydrated: true });
     }

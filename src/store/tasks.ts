@@ -25,6 +25,7 @@ import type { LibraryTask } from '../data/library';
 import { putTombstone } from '../storage/kv';
 import { loadAllTasks, loadAllCompletions, saveTask, saveCompletion, hardDelete } from './db';
 import { syncReminders } from '../lib/reminders';
+import { logEvent, logError } from '../feedback/log';
 import { QA_MODE } from '../qa/qaMode';
 import { qaTasks, qaCompletions } from '../qa/fixtures';
 
@@ -88,9 +89,15 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
         set({ tasks: qaTasks(), completions: qaCompletions(), hydrated: true });
         return;
       }
+      // The counts that answer "I opened it and my upkeep list was empty".
+      logEvent('tasks', 'hydrated', {
+        tasks: tasks.length,
+        completions: completions.length,
+      });
       set({ tasks, completions, hydrated: true });
       syncReminders(get().tasks, get().completions);
     } catch (err) {
+      logError('tasks', err, { during: 'hydrate' });
       console.warn('home-maintenance: failed to load from disk', err);
       set({ hydrated: true });
     }
