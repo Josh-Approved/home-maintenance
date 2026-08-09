@@ -11,7 +11,8 @@
       "bundleIdentifier": "com.joshapproved.homemaintenance",
       "infoPlist": {
         "CFBundleName": "Home Upkeep",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleLocalizations": ["en", "es", "de", "fr", "it", "pt-BR", "ja"]
       }
     },
     "android": {
@@ -28,6 +29,7 @@
     "owner": "josh-approved",
     "plugins": [
       "./plugins/withGradleJvmArgs",
+      "./plugins/withAndroidLocaleConfig",
       "expo-sqlite",
       "expo-sharing",
       "expo-splash-screen",
