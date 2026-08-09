@@ -4,7 +4,7 @@
  * fire-and-forget. The store is the in-memory source of truth; db.ts is
  * durable backup.
  *
- * Every mutation that can move a due date ends with syncReminders() — the
+ * Every mutation that can move a due date ends with syncAppReminders() — the
  * scheduled local notifications always mirror the current schedule state.
  *
  * Note the curried `create<State>()(...)` form — Zustand v5 requires it
@@ -24,7 +24,7 @@ import {
 import type { LibraryTask } from '../data/library';
 import { putTombstone } from '../storage/kv';
 import { loadAllTasks, loadAllCompletions, saveTask, saveCompletion, hardDelete } from './db';
-import { syncReminders } from '../lib/reminders';
+import { syncAppReminders } from '../lib/reminderAdapter';
 import { logEvent, logError } from '../feedback/log';
 import { QA_MODE } from '../qa/qaMode';
 import { qaTasks, qaCompletions } from '../qa/fixtures';
@@ -95,7 +95,7 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
         completions: completions.length,
       });
       set({ tasks, completions, hydrated: true });
-      syncReminders(get().tasks, get().completions);
+      syncAppReminders(get().tasks, get().completions);
     } catch (err) {
       logError('tasks', err, { during: 'hydrate' });
       console.warn('home-maintenance: failed to load from disk', err);
@@ -107,7 +107,7 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
     const task = makeTask(fields);
     set((s) => ({ tasks: [task, ...s.tasks] }));
     persistTask(task);
-    syncReminders(get().tasks, get().completions);
+    syncAppReminders(get().tasks, get().completions);
     return task.id;
   },
 
@@ -130,7 +130,7 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
     if (fresh.length === 0) return [];
     set((s) => ({ tasks: [...fresh, ...s.tasks] }));
     for (const t of fresh) persistTask(t);
-    syncReminders(get().tasks, get().completions);
+    syncAppReminders(get().tasks, get().completions);
     return fresh.map((t) => t.id);
   },
 
@@ -145,28 +145,28 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
         return next;
       }),
     }));
-    syncReminders(get().tasks, get().completions);
+    syncAppReminders(get().tasks, get().completions);
   },
 
   deleteTask: (id) => {
     set((s) => ({ tasks: s.tasks.filter((t) => t.id !== id) }));
     hardDelete('tasks', id).catch((err) => console.warn('home-maintenance: failed to delete', err));
     putTombstone(id, Date.now()).catch(() => {});
-    syncReminders(get().tasks, get().completions);
+    syncAppReminders(get().tasks, get().completions);
   },
 
   markDone: (taskId, at) => {
     const completion = makeCompletion(taskId, at);
     set((s) => ({ completions: [completion, ...s.completions] }));
     persistCompletion(completion);
-    syncReminders(get().tasks, get().completions);
+    syncAppReminders(get().tasks, get().completions);
   },
 
   setLastDone: (taskId, at) => {
     const { completions, changed } = withLastDoneAt(taskId, get().completions, at);
     set({ completions });
     persistCompletion(changed);
-    syncReminders(get().tasks, get().completions);
+    syncAppReminders(get().tasks, get().completions);
   },
 
   undoLastDone: (taskId) => {
@@ -175,7 +175,7 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
     const dead = { ...latest, deletedAt: Date.now() };
     set((s) => ({ completions: s.completions.map((c) => (c.id === latest.id ? dead : c)) }));
     persistCompletion(dead);
-    syncReminders(get().tasks, get().completions);
+    syncAppReminders(get().tasks, get().completions);
   },
 
   importData: (tasks, completions) => {
@@ -186,7 +186,7 @@ export const useTasksStore = create<TasksState>()((set, get) => ({
     }));
     for (const t of tasks) persistTask(t);
     for (const c of completions) persistCompletion(c);
-    syncReminders(get().tasks, get().completions);
+    syncAppReminders(get().tasks, get().completions);
     return tasks.length;
   },
 }));

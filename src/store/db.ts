@@ -6,13 +6,8 @@
  */
 
 import { getDb } from '../storage/kv';
-import {
-  clampLeadDays,
-  clampRepeatDays,
-  clampRepeatCount,
-  type MaintenanceTask,
-  type Completion,
-} from '../data/task';
+import { type MaintenanceTask, type Completion } from '../data/task';
+import { clampLeadDays, clampRepeatDays, clampRepeatCount } from '../data/reminderPlan';
 import type { Appliance } from '../data/appliance';
 import type { CategoryId } from '../data/library';
 

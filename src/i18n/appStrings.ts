@@ -178,6 +178,8 @@ export const APP_STRINGS = {
     general: 'General',
   },
   notify: {
+    /** Android notification channel name, shown in the OS settings list. */
+    channelName: 'Reminders',
     dueTitle: '{name}',
     dueBody: 'Due today. A few minutes now saves a repair later.',
     aheadTomorrowBody: 'Due tomorrow.',

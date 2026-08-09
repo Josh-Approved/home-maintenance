@@ -177,6 +177,7 @@ const es = {
     general: 'General',
   },
   notify: {
+    channelName: 'Recordatorios',
     dueTitle: '{name}',
     dueBody: 'Vence hoy. Unos minutos ahora te ahorran una reparación después.',
     aheadTomorrowBody: 'Vence mañana.',

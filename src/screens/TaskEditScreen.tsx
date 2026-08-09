@@ -20,7 +20,7 @@ import { useAppliancesStore } from '../store/appliances';
 import { completionsFor, lastDoneAt } from '../data/task';
 import { LIBRARY, type CategoryId } from '../data/library';
 import { intervalText } from '../lib/format';
-import { ensureNotificationPermission } from '../lib/reminders';
+import { optInToReminders } from '../lib/reminderAdapter';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { DrilldownRow } from '../components/DrilldownRow';
 import { CategorySheet } from '../components/CategorySheet';
@@ -89,10 +89,19 @@ export default function TaskEditScreen({ navigation, route }: Props) {
 
   const onToggleReminder = async (next: boolean) => {
     setReminder(next);
-    if (next) {
-      const ok = await ensureNotificationPermission();
-      if (!ok) setReminder(false);
-    }
+    if (!next) return;
+    // The one permission ask in the app, and only if this task's timing would
+    // actually schedule something (canon § Notifications — the plan is
+    // computed before the dialog, never the other way round).
+    const ok = await optInToReminders({
+      lastDoneAt: lastDone,
+      anchorAt: existing?.anchorAt,
+      intervalDays,
+      leadDays: reminderLeadDays,
+      repeatDays: reminderRepeatDays,
+      repeatCount: reminderRepeatCount,
+    });
+    if (!ok) setReminder(false);
   };
 
   const onSave = () => {

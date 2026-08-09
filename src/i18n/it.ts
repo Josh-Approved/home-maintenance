@@ -177,6 +177,7 @@ const it = {
     general: 'Generale',
   },
   notify: {
+    channelName: 'Promemoria',
     dueTitle: '{name}',
     dueBody: 'Scade oggi. Pochi minuti ora evitano una riparazione dopo.',
     aheadTomorrowBody: 'Scade domani.',

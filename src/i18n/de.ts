@@ -177,6 +177,7 @@ const de = {
     general: 'Allgemein',
   },
   notify: {
+    channelName: 'Erinnerungen',
     dueTitle: '{name}',
     dueBody: 'Heute fällig. Ein paar Minuten jetzt sparen später eine Reparatur.',
     aheadTomorrowBody: 'Morgen fällig.',

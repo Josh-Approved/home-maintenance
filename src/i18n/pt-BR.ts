@@ -178,6 +178,7 @@ const pt_BR = {
     general: 'Geral',
   },
   notify: {
+    channelName: 'Lembretes',
     dueTitle: '{name}',
     dueBody: 'Vence hoje. Alguns minutos agora evitam um conserto depois.',
     aheadTomorrowBody: 'Vence amanhã.',

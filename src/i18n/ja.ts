@@ -178,6 +178,7 @@ const ja = {
     general: '全般',
   },
   notify: {
+    channelName: 'リマインダー',
     dueTitle: '{name}',
     dueBody: '今日が期限です。今の数分があとの修理を防ぎます。',
     aheadTomorrowBody: '明日が期限です。',

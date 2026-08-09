@@ -177,6 +177,7 @@ const fr = {
     general: 'Général',
   },
   notify: {
+    channelName: 'Rappels',
     dueTitle: '{name}',
     dueBody: 'À faire aujourd’hui. Quelques minutes maintenant évitent une réparation plus tard.',
     aheadTomorrowBody: 'À faire demain.',

@@ -10,8 +10,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { atHour, DEFAULT_NOTIFY_HOUR } from '../data/task';
-import { getNotifyHour, setNotifyHour, syncReminders, NOTIFY_HOUR_PRESETS } from '../lib/reminders';
+import { atHour, DEFAULT_NOTIFY_HOUR, NOTIFY_HOUR_PRESETS } from '../data/reminderPlan';
+import { getNotifyHour, setNotifyHour } from '../lib/reminderScheduler';
+import { syncAppReminders } from '../lib/reminderAdapter';
 import { useTasksStore } from '../store/tasks';
 import { DrilldownSheet } from './DrilldownSheet';
 import { OptionChips } from './OptionChips';
@@ -34,7 +35,7 @@ export function useNotifyHour(): [number, (h: number) => void] {
     setHour(next);
     void setNotifyHour(next).then(() => {
       const { tasks, completions } = useTasksStore.getState();
-      syncReminders(tasks, completions);
+      syncAppReminders(tasks, completions);
     });
   };
 

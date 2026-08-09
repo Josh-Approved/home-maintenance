@@ -13,7 +13,8 @@ import {
   REMINDER_LEAD_PRESETS,
   REMINDER_REPEAT_PRESETS,
   REMINDER_COUNT_PRESETS,
-} from '../data/task';
+  leadPresetsFor,
+} from '../data/reminderPlan';
 import { DrilldownSheet } from './DrilldownSheet';
 import { OptionChips } from './OptionChips';
 import { t } from '../i18n';
@@ -74,7 +75,7 @@ export function ReminderSheet({
 }: Props) {
   const { c } = useTheme();
   const s = makeStyles(c);
-  const leadChoices = REMINDER_LEAD_PRESETS.filter((p) => p === 0 || p < intervalDays);
+  const leadChoices = leadPresetsFor(intervalDays);
 
   return (
     <DrilldownSheet visible={visible} title={t('edit.reminderTiming')} onClose={onClose}>
