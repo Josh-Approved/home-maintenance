@@ -135,5 +135,46 @@
     {
       "screenshot": "settings"
     }
-  ]
+  ],
+  "survival": {
+    "$comment": "Resilience probes (canon § Resilience — mechanically enforced). This app holds user-visible mid-task state that took real effort to enter (a maintenance schedule, completions, appliance records), so losing it to a backgrounding or an OS process kill is the category-defining failure. Compiles to qa/flows/state-survival.yaml (scripts/qa/compile-flow.mjs); full profile + nightly, never per-PR. The mutating action is ADD FROM LIBRARY, because that is the one the seed can't fake: the QA fixtures live in memory only (the store seeds when disk is empty and never writes them back), so a task added through the real add flow is the only row in SQLite and therefore the only honest proof that a write survived. Intent oracle throughout: the task the user added is still on the Tasks list. Three probes in order — (1) background then relaunch keeping state, (2) stopApp (process kill) then relaunch keeping state, (3) a rotation round-trip. The app is portrait-locked (app.json expo.orientation), so probe 3 proves a device rotation on a tablet leaves the user exactly where they were rather than proving a landscape layout.",
+    "clearState": true,
+    "steps": [
+      { "waitFor": "@due-title", "timeout": 30000 },
+      { "tap": "@tasks-tab" },
+      { "waitFor": "@add-task-fab", "timeout": 15000 },
+      { "assertNot": "@added-task" },
+      { "tap": "@add-task-fab" },
+      { "waitFor": "@library-title", "timeout": 15000 },
+      { "scrollUntilVisible": "@library-sump" },
+      { "tap": "@library-sump" },
+      { "tap": "@library-add-one" },
+      { "waitFor": "@setup-title", "timeout": 15000 },
+      { "tap": "@setup-done" },
+      { "waitFor": "@add-task-fab", "timeout": 15000 },
+      { "assert": "@added-task" },
+
+      { "wait": 1500 },
+      { "background": 2000 },
+      { "relaunch": true },
+      { "waitFor": "@due-title", "timeout": 30000 },
+      { "tap": "@tasks-tab" },
+      { "waitFor": "@add-task-fab", "timeout": 15000 },
+      { "assert": "@added-task" },
+
+      { "stopApp": true },
+      { "relaunch": true },
+      { "waitFor": "@due-title", "timeout": 30000 },
+      { "tap": "@tasks-tab" },
+      { "waitFor": "@add-task-fab", "timeout": 15000 },
+      { "assert": "@added-task" },
+
+      { "rotate": "landscape" },
+      { "waitFor": "@add-task-fab", "timeout": 10000 },
+      { "assert": "@added-task" },
+      { "rotate": "portrait" },
+      { "waitFor": "@add-task-fab", "timeout": 10000 },
+      { "assert": "@added-task" }
+    ]
+  }
 }
