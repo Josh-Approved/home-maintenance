@@ -14,10 +14,9 @@ import * as Application from 'expo-application';
 
 export const APP_NAME = 'Home Upkeep - Josh Approved';
 
-/** Numeric App Store Connect id — filled once the ASC record exists (store
- *  setup). Empty is the known pre-store state; the review deep link no-ops
- *  cleanly until then. */
-export const IOS_APP_STORE_ID = '';
+/** Numeric App Store Connect id, from the ASC record for this bundle id. Must
+ *  stay in step with `submit.production.ios.ascAppId` in eas.json. */
+export const IOS_APP_STORE_ID = '6791778049';
 export const ANDROID_PACKAGE = 'com.joshapproved.homemaintenance';
 
 /**
