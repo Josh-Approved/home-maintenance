@@ -149,10 +149,11 @@ export async function ensureNotificationPermission(): Promise<boolean> {
 
 async function ensureChannel(channelId: string, channelName: string): Promise<void> {
   // Notification channels are an Android-only concept; a no-op elsewhere.
-  // Written as a positive branch rather than an early return: the parity linter
-  // (`parity/no-platform-early-return`) reads `if (Platform.OS !== …) return` as
-  // a feature being gated off one platform, which is exactly the defect class it
-  // exists to catch.
+  // Written as a POSITIVE branch, not `if (Platform.OS !== 'android') return`:
+  // the fleet's parity linter (`parity/no-platform-early-return`) reads any
+  // Platform.OS early return as a feature being gated off one platform, and it
+  // cannot tell this OS-plumbing case apart from a real descope. Same behaviour,
+  // and the shape the rest of the fleet already uses.
   if (Platform.OS === 'android') {
     try {
       const importance =

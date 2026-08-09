@@ -6,31 +6,34 @@ const path = require('path');
 // "Declare localizations in the build").
 //
 // Our translations are runtime-only — the i18n dictionary swaps inside the JS
-// bundle — so the OS has no way to know this app speaks seven languages. Two
+// bundle — so the OS has no way to know the app speaks seven languages. Two
 // user-visible surfaces depend on the declaration: Android 13+'s per-app
-// language screen (Settings > Apps > Home Upkeep > Language), and Play's own
-// listing languages. Without it the app looks English-only.
+// language screen (Settings > Apps > <App> > Language), and the Play listing's
+// Languages field. Without it the app looks English-only in both places.
 //
 // Android reads this from a `res/xml/locales_config.xml` resource referenced by
-// `android:localeConfig` on <application>. Expo SDK 57's app config has NO
-// `android.localeConfig` key (checked against @expo/config-types' Android
-// interface for this SDK — the key does not exist, so writing it into app.json
-// would silently do nothing), and `expo.locales` is a different feature (it
-// localizes permission prompt strings, not the language set). Hence this local
-// config plugin, matching the withGradleJvmArgs pattern: it writes the resource
-// and sets the attribute at prebuild, so both survive CNG regeneration.
+// `android:localeConfig` on <application>. Expo's app config has NO
+// `android.localeConfig` key — verified against @expo/config-types on both SDK
+// 56 and SDK 57; the Android interface carries no locale field at all, so
+// writing one into app.json is a silent no-op that reads as done. (`expo.locales`
+// is a different feature: it localizes permission prompt strings, not the
+// language set.) Hence this config plugin, matching the withGradleJvmArgs
+// pattern: it writes the resource and sets the attribute at prebuild, so both
+// survive CNG regeneration.
 //
 // The iOS half of the same requirement is `ios.infoPlist.CFBundleLocalizations`
-// in app.json, which Expo does support directly. LOCALES here and that array
-// are kept in step by plugins/__tests__/localeConfig.test.ts.
+// in app.json, which Expo does support directly. Both platforms must claim the
+// same set — keep LOCALES here, that array, and the app's src/i18n locale list
+// in step.
 
 /** en is the build language; the rest are the canon § Translations locale set.
- *  BCP-47 tags, the form both locales_config.xml and CFBundleLocalizations take. */
+ *  BCP-47 tags, the form both locales_config.xml and CFBundleLocalizations take.
+ *  Android maps the region form ("pt-BR") to its own values-b+pt+BR resource. */
 const LOCALES = ['en', 'es', 'de', 'fr', 'it', 'pt-BR', 'ja'];
 
 const RESOURCE_NAME = 'locales_config';
 
-/** Pure: the locales_config.xml body. Exported so the drift test can read it
+/** Pure: the locales_config.xml body. Exported so a drift test can read it
  *  without running a prebuild. */
 function buildLocalesConfigXml(locales) {
   const entries = locales.map((l) => `    <locale android:name="${l}"/>`).join('\n');
@@ -55,10 +58,7 @@ function withLocalesConfigResource(config, locales) {
         'xml'
       );
       fs.mkdirSync(xmlDir, { recursive: true });
-      fs.writeFileSync(
-        path.join(xmlDir, `${RESOURCE_NAME}.xml`),
-        buildLocalesConfigXml(locales)
-      );
+      fs.writeFileSync(path.join(xmlDir, `${RESOURCE_NAME}.xml`), buildLocalesConfigXml(locales));
       return cfg;
     },
   ]);
