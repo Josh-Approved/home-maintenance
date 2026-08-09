@@ -12,7 +12,7 @@ Your data is stored in a local database on the phone itself. That’s the only c
 
 ## What’s collected
 
-Nothing. There is no data collection, no third-party sharing, and no telemetry of any kind. Reminders are local notifications scheduled on your device; they never touch a server. Find manual opens a search in your browser only when you tap it.
+Nothing. There is no data collection, no third-party sharing, and no telemetry of any kind. Reminders are local notifications the app schedules for itself; they never touch a server. Find manual opens a search in your browser only when you tap it.
 
 ## Questions
 

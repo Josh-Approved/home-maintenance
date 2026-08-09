@@ -23,7 +23,7 @@ npm run ios      # or: npm run android
 
 ## Privacy
 
-Your data stays with you. No accounts, no tracking, no analytics. Reminders are scheduled locally on the device. See [PRIVACY.md](PRIVACY.md).
+Your data stays with you. No accounts, no tracking, no analytics. Reminders are local notifications the app schedules for itself. See [PRIVACY.md](PRIVACY.md).
 
 ## License
 
