@@ -86,7 +86,7 @@ export function ApplianceSheet({ visible, value, suggestedName, onClose, onPick 
             value={newName}
             onChangeText={setNewName}
             placeholder={t('appliances.namePlaceholder')}
-            placeholderTextColor={c.fgSubtle}
+            placeholderTextColor={c.fgMuted}
             accessibilityLabel={t('edit.applianceNew')}
             returnKeyType="done"
             onSubmitEditing={onCreate}

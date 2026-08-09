@@ -83,7 +83,7 @@ export default function AppliancesScreen({ navigation }: Props) {
                     {linked > 0 ? ` · ${t('appliances.linkedCount', { count: String(linked) })}` : ''}
                   </Text>
                 </View>
-                <ChevronRight size={18} color={c.fgSubtle} strokeWidth={1.5} />
+                <ChevronRight size={18} color={c.fgMuted} strokeWidth={1.5} />
               </Pressable>
             );
           }}

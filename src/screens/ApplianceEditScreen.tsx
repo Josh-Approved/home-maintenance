@@ -132,7 +132,7 @@ export default function ApplianceEditScreen({ navigation, route }: Props) {
           value={name}
           onChangeText={setName}
           placeholder={t('appliances.namePlaceholder')}
-          placeholderTextColor={c.fgSubtle}
+          placeholderTextColor={c.fgMuted}
           accessibilityLabel={t('appliances.name')}
           autoFocus={!existing}
           returnKeyType="done"
@@ -230,7 +230,7 @@ export default function ApplianceEditScreen({ navigation, route }: Props) {
                     <Text style={s.linkedName}>{task.name}</Text>
                     <Text style={s.linkedMeta}>{intervalText(task.intervalDays)}</Text>
                   </View>
-                  <ChevronRight size={16} color={c.fgSubtle} strokeWidth={1.5} />
+                  <ChevronRight size={16} color={c.fgMuted} strokeWidth={1.5} />
                 </Pressable>
               ))
             )}

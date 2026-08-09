@@ -163,7 +163,7 @@ export default function TaskEditScreen({ navigation, route }: Props) {
           value={name}
           onChangeText={setName}
           placeholder={t('edit.namePlaceholder')}
-          placeholderTextColor={c.fgSubtle}
+          placeholderTextColor={c.fgMuted}
           accessibilityLabel={t('edit.name')}
           autoFocus={!existing}
           returnKeyType="done"
@@ -226,7 +226,7 @@ export default function TaskEditScreen({ navigation, route }: Props) {
           value={note}
           onChangeText={setNote}
           placeholder={t('edit.notePlaceholder')}
-          placeholderTextColor={c.fgSubtle}
+          placeholderTextColor={c.fgMuted}
           accessibilityLabel={t('edit.note')}
           multiline
           textAlignVertical="top"

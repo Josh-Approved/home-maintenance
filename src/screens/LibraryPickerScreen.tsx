@@ -105,7 +105,7 @@ export default function LibraryPickerScreen({ navigation }: Props) {
         value={query}
         onChangeText={setQuery}
         placeholder={t('library.search')}
-        placeholderTextColor={c.fgSubtle}
+        placeholderTextColor={c.fgMuted}
         accessibilityLabel={t('library.search')}
         returnKeyType="done"
         onSubmitEditing={Keyboard.dismiss}
@@ -142,7 +142,7 @@ export default function LibraryPickerScreen({ navigation }: Props) {
                 {added || isSelected ? (
                   <SquareCheck size={22} color={added ? c.fgSubtle : c.fg} strokeWidth={1.5} />
                 ) : (
-                  <Square size={22} color={c.fgSubtle} strokeWidth={1.5} />
+                  <Square size={22} color={c.fgMuted} strokeWidth={1.5} />
                 )}
                 <View style={s.rowText}>
                   <Text style={[s.rowName, added && s.rowNameAdded]}>{item.name}</Text>
