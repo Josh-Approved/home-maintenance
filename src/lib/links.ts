@@ -20,6 +20,14 @@ export const IOS_APP_STORE_ID = '6791778049';
 export const ANDROID_PACKAGE = 'com.joshapproved.homemaintenance';
 
 /**
+ * Public launch date (ISO), the day this app's store listings went live — not
+ * the build date and not the submission date. Drives the launch-notice window
+ * (60 days, first 3 sessions). Ships in the binary; there is no remote config.
+ * A malformed date fails closed, so the notice can never pin on forever.
+ */
+export const LAUNCHED_AT = '2026-08-09';
+
+/**
  * TIP_JAR_ENABLED gates every support surface (Settings row, FundingFooter
  * button) — each opens the canonical TipJarSheet. Apple rejects external
  * donation links for a for-profit app (guideline 3.1.1), so the IAP tip jar

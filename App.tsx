@@ -23,7 +23,7 @@ import AppliancesScreen from './src/screens/AppliancesScreen';
 import ApplianceEditScreen from './src/screens/ApplianceEditScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import Credits from './src/components/Credits';
-import { IOS_APP_STORE_ID, ANDROID_PACKAGE } from './src/lib/links';
+import { IOS_APP_STORE_ID, ANDROID_PACKAGE, LAUNCHED_AT } from './src/lib/links';
 import { t } from './src/i18n';
 import { QA_MODE } from './src/qa/qaMode';
 
@@ -57,8 +57,9 @@ const Tab = createBottomTabNavigator<TabParamList>();
  * Store identity for the canonical review prompt. The shell owns the trigger
  * (session count, the 3/15/30 schedule, the cap and the modal); this app's
  * whole contribution is the prop. Module scope so the object identity is
- * stable across renders. IOS_APP_STORE_ID is empty until the App Store Connect
- * record exists — a blank id short-circuits the deep link safely.
+ * stable across renders. The launch notice is the same deal — one date, and the
+ * shell owns the window, the cap, the modal, and its precedence over the
+ * review prompt when both want the same cold start.
  */
 const REVIEW = {
   appName: 'Home Upkeep',
@@ -133,7 +134,7 @@ export default function App() {
   const ready = fontsLoaded && tasksHydrated && appliancesHydrated;
 
   return (
-    <AppShell ready={ready} review={REVIEW}>
+    <AppShell ready={ready} review={REVIEW} launchedAt={LAUNCHED_AT}>
       <Stack.Navigator
         initialRouteName="Tabs"
         screenOptions={{ headerShown: false, animation: QA_MODE ? 'none' : undefined }}
