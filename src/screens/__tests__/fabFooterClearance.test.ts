@@ -2,45 +2,33 @@
  * Regression guard: fab-footer-clearance-sweep (defect packing-list-20260801-2
  * class — the floating "+" FAB must not cover the FundingFooter).
  *
- * Appliances/TasksScreen use a DIFFERENT FAB idiom than the canonical
- * workout-timer/packing-list one. There, the FAB is lifted dynamically —
- * `bottom: footerHeight + space.s4` — so the footer's own height cancels out
- * of the safety math and the invariant collapses to a screen-size-independent
- * `paddingBottom <= space.s4 + space.s5`.
+ * Appliances/TasksScreen use the canonical workout-timer/packing-list idiom:
+ * the FAB is lifted DYNAMICALLY — `bottom: footerHeight + space.s4`, with
+ * footerHeight measured by usePullRevealFooter — so the footer's own height
+ * cancels out of the safety math and the invariant collapses to a
+ * screen-size- and font-scale-independent relationship between two tokens.
  *
- * Here the FAB sits at a FIXED `bottom: space.s8`, independent of the
- * footer's height. That flips the relationship: because the footer is pinned
- * to the bottom of the (short) scroll content via `marginTop: 'auto'`, its
- * bottom edge sits `paddingBottom` above the screen's bottom edge — so a
- * LARGER paddingBottom pushes the footer FARTHER from the fixed FAB, and a
- * SMALLER one pushes it closer. Applying the workout-timer fix verbatim
- * (shrink paddingBottom to space.s5) would move the footer *toward* the FAB
- * and manufacture the exact defect it's meant to prevent.
+ * The geometry (all offsets measured up from the scroll view's bottom edge):
  *
- * The geometry (offsets measured up from the screen's bottom edge; FAB style
- * read live from the screen's own makeStyles, not copied):
+ *   footer box   [P, P + H]        P = listContent.paddingBottom, H = footerHeight
+ *   footer text  starts at P + H - space.s5   (FundingFooter's own paddingTop)
+ *   FAB          [H + space.s4, H + space.s4 + 56]
  *
- *   FAB        [fab.bottom, fab.bottom + fab.height]
- *   footer box [P, P + H]              P = listContent.paddingBottom
- *   button row bottom edge = P + FundingFooter.wrap.paddingBottom(s6)
- *                              + FundingFooter.wrap.gap(s4)
- *                              + lockupHeight
+ * The FAB's bottom edge intrudes into the footer's button row exactly when
  *
- * `lockupHeight` is the "josh approved" wordmark row: Wordmark.tsx sets a
- * literal (non-scaling) fontSize/lineHeight, so its rendered height is a
- * stable ~22px (lockup's own paddingTop space.s1=2 + max(icon 18, text
- * lineHeight 20) = 20) at every accessibility text-scale setting — larger
- * Dynamic Type only ever *grows* the row further from the FAB, so default
- * scale is the worst case, not an approximation of it.
+ *   H + space.s4  <  P + H - space.s5     ⟺     P > space.s4 + space.s5
  *
- * No overlap with the button row requires:
- *   fab.bottom + fab.height <= P + space.s6 + space.s4 + LOCKUP_HEIGHT
+ * — note H cancels, so this holds for any footer content on any device.
  *
- * At the current (unchanged) paddingBottom = space.s9 this holds with real
- * margin; at workout-timer's space.s5 it does not — see the second test,
- * which is the failing-first proof for this file (temporarily set
- * `LOCKUP_HEIGHT` aside and swap `paddingBottom: space.s9` for
- * `paddingBottom: space.s5` in either screen to watch the first test go red).
+ * This file previously guarded a DIFFERENT, app-local idiom: a FAB pinned at a
+ * fixed `bottom: space.s8` with a large `paddingBottom: space.s9` holding the
+ * footer clear of it. That cleared the footer in practice, but only because of
+ * the footer's actual rendered height — it could not be proven from tokens
+ * alone, and it meant two idioms in the fleet for one rule. Ticket
+ * hm-fab-adopt-dynamic-lift moved both screens onto the canonical lift; the
+ * padding had to shrink to space.s5 in the same change, because under the lift
+ * a larger padding raises the footer WITHOUT raising the FAB (the first test
+ * below goes red at the old space.s9 — that is this file's failing-first proof).
  */
 
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -60,13 +48,16 @@ jest.mock('expo-sqlite', () => ({
       getFirstAsync: () => Promise.resolve(null),
     }),
 }));
-// Both screens pull in FundingFooter (reanimated/worklets, no working jest
-// mock wired for this SDK combo in this repo) and TipJarSheet (IAP) and the
-// tasks store's reminder scheduling (expo-notifications) transitively — this
-// test only needs the plain makeStyles function each screen exports, so
-// stand in inert components/no-ops for the two module trees this test never
-// exercises rather than dragging their native deps through jest.
+// Both screens pull in FundingFooter + usePullRevealFooter (reanimated/worklets,
+// no working jest mock wired for this SDK combo in this repo) and TipJarSheet
+// (IAP) and the tasks store's reminder scheduling (expo-notifications)
+// transitively — this test only needs the plain makeStyles function each screen
+// exports, so stand in inert components/no-ops for the module trees this test
+// never exercises rather than dragging their native deps through jest.
 jest.mock('../../components/FundingFooter', () => ({ FundingFooter: () => null }));
+jest.mock('../../components/usePullRevealFooter', () => ({
+  usePullRevealFooter: () => ({ footerHeight: 0 }),
+}));
 jest.mock('../../components/TipJarSheet', () => ({ __esModule: true, default: () => null }));
 jest.mock('expo-notifications', () => ({
   scheduleNotificationAsync: () => Promise.resolve('id'),
@@ -83,8 +74,7 @@ import { makeStyles as makeTasksStyles } from '../TasksScreen';
 import { space } from '../../theme';
 import type { Colors } from '../../theme';
 
-// The FundingFooter/Wordmark wrap only reads colour values, so a bare
-// stand-in is enough for these two screens' makeStyles too.
+// The screens' makeStyles only read colour values, so a bare stand-in is enough.
 const stubColors = new Proxy({}, { get: () => '#000000' }) as unknown as Colors;
 
 /** StyleSheet.create returns opaque ids on some RN versions; flatten defensively. */
@@ -93,37 +83,16 @@ function flatten(style: unknown): Record<string, unknown> {
   return (StyleSheet.flatten(style) || {}) as Record<string, unknown>;
 }
 
-// FundingFooter.tsx wrap: paddingBottom space.s6, gap space.s4 (both tokens,
-// not copied off the render — cross-checked against the file in this test's
-// own assertions below). LOCKUP_HEIGHT is the one non-token quantity, derived
-// from Wordmark.tsx's literal (non-Dynamic-Type-scaling) dimensions — see the
-// file header for why default scale is the true worst case.
-const FOOTER_WRAP_PADDING_BOTTOM = space.s6;
-const FOOTER_WRAP_GAP = space.s4;
-const LOCKUP_HEIGHT = space.s1 + 20; // lockup paddingTop (2) + wordmark row (max(icon 18, text lineHeight 20))
-
 describe.each([
   ['Appliances', makeAppliancesStyles],
   ['Tasks', makeTasksStyles],
 ])('%s screen — FAB clearance over the funding footer', (_name, makeStyles) => {
-  it('keeps the fixed FAB clear of the footer button row at the current padding', () => {
+  it('keeps the list bottom padding under the FAB lift, so the FAB clears the footer buttons', () => {
     const s = makeStyles(stubColors);
-    const fab = flatten(s.fab);
-    const listContent = flatten(s.listContent);
+    const paddingBottom = flatten(s.listContent).paddingBottom as number;
 
-    const fabBottom = fab.bottom as number;
-    const fabHeight = fab.height as number;
-    const paddingBottom = listContent.paddingBottom as number;
-
-    expect(typeof fabBottom).toBe('number');
-    expect(typeof fabHeight).toBe('number');
     expect(typeof paddingBottom).toBe('number');
-
-    const fabTop = fabBottom + fabHeight;
-    const buttonRowBottom =
-      paddingBottom + FOOTER_WRAP_PADDING_BOTTOM + FOOTER_WRAP_GAP + LOCKUP_HEIGHT;
-
-    expect(fabTop).toBeLessThanOrEqual(buttonRowBottom);
+    expect(paddingBottom).toBeLessThanOrEqual(space.s4 + space.s5);
   });
 
   it('still leaves the footer breathing room off the screen edge', () => {

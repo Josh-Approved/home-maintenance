@@ -7,6 +7,7 @@
 import React from 'react';
 import { View, Text, Pressable, SectionList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { GestureDetector } from 'react-native-gesture-handler';
 import { Plus } from 'lucide-react-native';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
@@ -19,6 +20,7 @@ import { intervalText } from '../lib/format';
 import { categoryHue } from '../components/CategoryChip';
 import { EmptyState } from '../components/EmptyState';
 import { FundingFooter } from '../components/FundingFooter';
+import { usePullRevealFooter } from '../components/usePullRevealFooter';
 import TipJarSheet from '../components/TipJarSheet';
 import { TIP_PRODUCT_IDS } from '../constants/tipProducts';
 import { TIP_JAR_ENABLED } from '../lib/links';
@@ -53,6 +55,20 @@ export default function TasksScreen({ navigation }: Props) {
       .sort((a, b) => a.name.localeCompare(b.name)),
   })).filter((sec) => sec.data.length > 0);
 
+  // Pull-to-reveal funding footer (rests at the bottom of the scroll; the
+  // wordmark pops on over-pull) — and the measured footer height the FAB lifts
+  // itself by, so the + always clears the footer's buttons.
+  const {
+    pullToReveal,
+    reveal,
+    gesture,
+    onScrollJS,
+    onScrollViewLayout,
+    onContentSizeChange,
+    footerHeight,
+    onFooterLayout,
+  } = usePullRevealFooter();
+
   return (
     <SafeAreaView style={s.safe} edges={['top', 'left', 'right']}>
       <View style={s.header}>
@@ -62,17 +78,32 @@ export default function TasksScreen({ navigation }: Props) {
       {active.length === 0 ? (
         <>
           <EmptyState message={t('tasks.empty')} />
-          <FundingFooter onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined} />
+          {/* Measured here too, so the FAB lifts by the real footer height on
+              the empty screen as well (nothing scrolls, so no pull-to-reveal). */}
+          <View onLayout={onFooterLayout}>
+            <FundingFooter onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined} />
+          </View>
         </>
       ) : (
+        <GestureDetector gesture={gesture}>
         <SectionList
           sections={sections}
           keyExtractor={(item) => item.id}
           stickySectionHeadersEnabled={false}
           contentContainerStyle={[s.listContent, s.grow]}
+          onScroll={pullToReveal ? onScrollJS : undefined}
+          scrollEventThrottle={16}
+          alwaysBounceVertical={pullToReveal}
+          overScrollMode={pullToReveal ? 'never' : 'auto'}
+          onLayout={onScrollViewLayout}
+          onContentSizeChange={onContentSizeChange}
           ListFooterComponent={
-            <View style={s.footerHolder}>
-              <FundingFooter onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined} />
+            <View style={s.footerHolder} onLayout={onFooterLayout}>
+              <FundingFooter
+                onSupport={TIP_JAR_ENABLED ? () => setTipVisible(true) : undefined}
+                reveal={reveal}
+                pullToReveal={pullToReveal}
+              />
             </View>
           }
           renderSectionHeader={({ section }) => (
@@ -106,10 +137,11 @@ export default function TasksScreen({ navigation }: Props) {
             );
           }}
         />
+        </GestureDetector>
       )}
 
       <Pressable
-        style={({ pressed }) => [s.fab, pressed && s.fabPressed]}
+        style={({ pressed }) => [s.fab, { bottom: footerHeight + space.s4 }, pressed && s.fabPressed]}
         onPress={() => navigation.navigate('LibraryPicker')}
         accessibilityRole="button"
         accessibilityLabel={t('tasks.add')}
@@ -152,7 +184,12 @@ export function makeStyles(c: Colors) {
       textTransform: 'uppercase',
       letterSpacing: 0.5,
     },
-    listContent: { ...boundedContent, paddingBottom: space.s9 },
+    // The funding footer is pinned to the bottom of this content (footerHolder
+    // marginTop:auto) and the FAB lifts itself above it by footerHeight, so
+    // this padding is only the footer's breathing room off the screen edge.
+    // It must stay SMALL: every extra pixel here raises the footer without
+    // raising the FAB (see __tests__/fabFooterClearance.test.ts).
+    listContent: { ...boundedContent, paddingBottom: space.s5 },
     grow: { flexGrow: 1 },
     footerHolder: { marginTop: 'auto' },
     row: {
