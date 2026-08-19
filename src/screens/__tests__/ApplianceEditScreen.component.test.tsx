@@ -153,6 +153,18 @@ describe('ApplianceEditScreen', () => {
     expect(navigation.navigate).toHaveBeenCalledWith('TaskEdit', { applianceId });
   });
 
+  it('opens a linked task from its row in the maintenance list', async () => {
+    const { applianceId, taskId } = seedLinkedPair();
+    const user = userEvent.setup({ delay: 0 });
+    await renderEditor({ applianceId });
+
+    await user.press(screen.getByRole('button', { name: 'Replace furnace filter' }));
+
+    // This row is the only path from an appliance to the work it needs; it must
+    // carry the task id, not open the blank editor the FAB below it opens.
+    expect(navigation.navigate).toHaveBeenCalledWith('TaskEdit', { taskId });
+  });
+
   it('deletes the appliance only after the confirm, and leaves linked tasks alive', async () => {
     const { applianceId, taskId } = seedLinkedPair();
     let confirm: (() => void) | undefined;

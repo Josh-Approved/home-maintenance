@@ -187,7 +187,7 @@
       "where": "src/screens/AppliancesScreen.tsx:125",
       "proof": {
         "kind": "rntl",
-        "ref": "src/screens/__tests__/tabAddFabs.component.test.tsx"
+        "ref": "src/screens/__tests__/listTabs.component.test.tsx"
       },
       "note": "Pressable · onPress — presses the add FAB and asserts a blank appliance editor opens; exactly one add affordance on the tab"
     },
@@ -267,7 +267,7 @@
       "where": "src/screens/TasksScreen.tsx:143",
       "proof": {
         "kind": "rntl",
-        "ref": "src/screens/__tests__/tabAddFabs.component.test.tsx"
+        "ref": "src/screens/__tests__/listTabs.component.test.tsx"
       },
       "note": "Pressable · onPress — presses the add FAB and asserts the starter library opens; exactly one add affordance on the tab"
     },
@@ -306,306 +306,340 @@
       "label": "Pressable (dynamic label)",
       "where": "src/components/Dialogs.tsx:116",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · sheet body — a tap that lands on the sheet is swallowed, so the menu stays open"
     },
     {
       "id": "components/Dialogs#pressable-123",
       "label": "Pressable (dynamic label)",
       "where": "src/components/Dialogs.tsx:123",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · option row — fires that option’s handler (past the 260ms defer) and closes the sheet"
     },
     {
       "id": "components/Dialogs#common.cancel",
       "label": "common.cancel",
       "where": "src/components/Dialogs.tsx:135",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — the sheet’s Cancel closes it and no option ever fires"
     },
     {
       "id": "components/Dialogs#common.cancel-2",
       "label": "common.cancel",
       "where": "src/components/Dialogs.tsx:212",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress · prompt scrim — closes without submitting"
     },
     {
       "id": "components/Dialogs#pressable-218",
       "label": "Pressable (dynamic label)",
       "where": "src/components/Dialogs.tsx:218",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · prompt card — a tap inside the card is swallowed, so the edit is not thrown away"
     },
     {
       "id": "components/Dialogs#textinput-223",
       "label": "TextInput (dynamic label)",
       "where": "src/components/Dialogs.tsx:223",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "TextInput · onSubmitEditing · dynamic/child-text label"
+      "note": "TextInput · onSubmitEditing — keyboard return submits the typed text"
     },
     {
       "id": "components/Dialogs#common.cancel-3",
       "label": "common.cancel",
       "where": "src/components/Dialogs.tsx:238",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress · prompt ghost button — the Cancel a user aims at abandons the edit"
     },
     {
       "id": "components/Dialogs#pressable-246",
       "label": "Pressable (dynamic label)",
       "where": "src/components/Dialogs.tsx:246",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress — the prompt’s confirm submits the trimmed text (custom label honoured)"
     },
     {
       "id": "components/Dialogs#common.cancel-4",
       "label": "common.cancel",
       "where": "src/components/Dialogs.tsx:311",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress · confirm scrim — closes without confirming"
     },
     {
       "id": "components/Dialogs#pressable-317",
       "label": "Pressable (dynamic label)",
       "where": "src/components/Dialogs.tsx:317",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · confirm card — a tap on the card neither confirms nor dismisses"
     },
     {
       "id": "components/Dialogs#common.cancel-5",
       "label": "common.cancel",
       "where": "src/components/Dialogs.tsx:323",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress · confirm ghost button — the deliberate \"no\" on a destructive confirm"
     },
     {
       "id": "components/Dialogs#pressable-331",
       "label": "Pressable (dynamic label)",
       "where": "src/components/Dialogs.tsx:331",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress — the confirm button fires onConfirm and closes (custom/destructive label honoured)"
     },
     {
       "id": "components/DrilldownRow#pressable-35",
       "label": "Pressable (dynamic label)",
       "where": "src/components/DrilldownRow.tsx:35",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/DrilldownKit.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a hub row and asserts it opens that dimension's editor; the name carries label + current value"
     },
     {
       "id": "components/IntervalSheet#edit.save",
       "label": "edit.save",
       "where": "src/components/IntervalSheet.tsx:80",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/IntervalSheet.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses Save and asserts the interval handed back is count times unit, and that a blank count saves nothing"
     },
     {
       "id": "components/LastDoneSheet#edit.save",
       "label": "edit.save",
       "where": "src/components/LastDoneSheet.tsx:93",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LastDoneSheet.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses Save and asserts the working date is what commits, and that the sheet closes with it"
     },
     {
       "id": "components/LastDoneSheet#pressable-118",
       "label": "Pressable (dynamic label)",
       "where": "src/components/LastDoneSheet.tsx:118",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LastDoneSheet.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a quick-pick chip and asserts it moves the draft date only — nothing commits until Save"
     },
     {
       "id": "components/LastDoneSheet#lastdone.dayearlier",
       "label": "lastDone.dayEarlier",
       "where": "src/components/LastDoneSheet.tsx:133",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LastDoneSheet.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses the minus stepper and asserts the saved date moves back exactly one day"
     },
     {
       "id": "components/LastDoneSheet#lastdone.daylater",
       "label": "lastDone.dayLater",
       "where": "src/components/LastDoneSheet.tsx:144",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LastDoneSheet.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses the plus stepper and asserts it steps forward but will not walk past today"
     },
     {
       "id": "components/OptionChips#pressable-41",
       "label": "Pressable (dynamic label)",
       "where": "src/components/OptionChips.tsx:41",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/DrilldownKit.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a chip and asserts the picked key, plus that the selected state is announced, not just filled"
     },
     {
       "id": "screens/ApplianceEditScreen#pressable-222",
       "label": "Pressable (dynamic label)",
       "where": "src/screens/ApplianceEditScreen.tsx:222",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/ApplianceEditScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a linked-task row and asserts the task editor opens on THAT task id"
     },
     {
       "id": "screens/LibraryPickerScreen#pressable-134",
       "label": "Pressable (dynamic label)",
       "where": "src/screens/LibraryPickerScreen.tsx:134",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/LibraryPickerScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — ticks a catalog row and asserts it becomes checked and raises the Add bar; an already-added row stays untickable"
     },
     {
       "id": "screens/LibraryPickerScreen#pressable-162",
       "label": "Pressable (dynamic label)",
       "where": "src/screens/LibraryPickerScreen.tsx:162",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/LibraryPickerScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses the Add bar and asserts exactly the ticked tasks are created and their ids reach the setup step"
     },
     {
       "id": "screens/TaskSetupScreen#pressable-138",
       "label": "Pressable (dynamic label)",
       "where": "src/screens/TaskSetupScreen.tsx:138",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/TaskSetupScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses Add & link and asserts the appliance is created (or an existing one reused) and EVERY task in the group is linked"
     },
     {
       "id": "screens/TaskSetupScreen#setup.done",
       "label": "setup.done",
       "where": "src/screens/TaskSetupScreen.tsx:173",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/TaskSetupScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses Done and asserts it simply leaves — an optional step validates nothing and reverts nothing"
     },
     {
       "id": "components/DrilldownSheet#pressable-164",
       "label": "Pressable (dynamic label)",
       "where": "src/components/DrilldownSheet.tsx:164",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/DrilldownKit.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a SheetOption row and asserts it reports itself; the detail line stays out of the speakable name"
     },
     {
       "id": "components/FundingFooter#about.supportshort",
       "label": "about.supportShort",
       "where": "src/components/FundingFooter.tsx:80",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/FundingFooter.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses Support and asserts the tip jar opens; absent entirely with no tip jar wired"
     },
     {
       "id": "components/LaunchNoticeModal#common.gotit",
       "label": "common.gotIt",
       "where": "src/components/LaunchNoticeModal.tsx:90",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LaunchNoticeModal.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — dismisses the launch card; asserts it is the ONLY action on the card and that showing it was counted"
     },
     {
       "id": "components/ReviewModal#about.review",
       "label": "about.review",
       "where": "src/components/ReviewModal.tsx:150",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/ReviewModal.linkSafety.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — opens the write-review URL and marks the install done; never marks done when the link fails or the store id is blank"
     },
     {
       "id": "components/SettingsAbout#about.learnmore",
       "label": "about.learnMore",
       "where": "src/components/SettingsAbout.tsx:69",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/SettingsAbout.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses the studio stamp and asserts it opens STUDIO_URL, with the destination in the hint"
     },
     {
       "id": "components/TipJarSheet#pressable-166",
       "label": "Pressable (dynamic label)",
       "where": "src/components/TipJarSheet.tsx:166",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/TipJarSheet.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a tier and asserts onTip fires with that product id; the tier is named by its price alone"
     },
     {
       "id": "screens/AppliancesScreen#pressable-104",
       "label": "Pressable (dynamic label)",
       "where": "src/screens/AppliancesScreen.tsx:104",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/listTabs.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses an appliance row and asserts the editor opens carrying that appliance id"
     },
     {
       "id": "screens/DueScreen#pressable-151",
       "label": "Pressable (dynamic label)",
       "where": "src/screens/DueScreen.tsx:151",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/DueScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a row's done circle and asserts the completion lands on THAT task, not its neighbour"
     },
     {
       "id": "screens/DueScreen#pressable-160",
       "label": "Pressable (dynamic label)",
       "where": "src/screens/DueScreen.tsx:160",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/DueScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses the row body and asserts it opens the task rather than recording it as done"
     },
     {
       "id": "screens/TasksScreen#pressable-118",
       "label": "Pressable (dynamic label)",
       "where": "src/screens/TasksScreen.tsx:118",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/listTabs.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a task row and asserts the editor opens carrying that task id"
     }
   ]
 }

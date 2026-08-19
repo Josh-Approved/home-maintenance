@@ -108,4 +108,56 @@ describe('LibraryPickerScreen', () => {
     // An unexplained empty list reads as a broken screen.
     await waitFor(() => expect(screen.getByText('No tasks match your search.')).toBeTruthy());
   });
+
+  it('ticks a catalog row and only offers the Add bar once something is picked', async () => {
+    const item = LIBRARY[0];
+    const user = userEvent.setup({ delay: 0 });
+    await renderPicker();
+
+    // Nothing picked yet — an Add bar over an empty selection is a dead button.
+    expect(screen.queryByRole('button', { name: /^Add / })).toBeNull();
+
+    await user.press(screen.getByLabelText(item.name));
+
+    expect(screen.getByLabelText(item.name).props.accessibilityState).toMatchObject({
+      checked: true,
+    });
+    expect(screen.getByRole('button', { name: 'Add 1' })).toBeTruthy();
+  });
+
+  it('adds exactly the ticked tasks and hands them to setup', async () => {
+    const [first, second] = LIBRARY;
+    const user = userEvent.setup({ delay: 0 });
+    await renderPicker();
+
+    await user.press(screen.getByLabelText(first.name));
+    await user.press(screen.getByLabelText(second.name));
+    await user.press(screen.getByRole('button', { name: 'Add 2' }));
+
+    const added = useTasksStore.getState().tasks.filter((task) => task.deletedAt == null);
+    expect(added.map((task) => task.name).sort()).toEqual([first.name, second.name].sort());
+    // Setup is where an interval and a real last-done date get set; dropping the
+    // ids here would strand the new tasks on library defaults.
+    expect(navigation.replace).toHaveBeenCalledWith('TaskSetup', {
+      taskIds: expect.arrayContaining(added.map((task) => task.id)),
+    });
+  });
+
+  it('will not add a task the home already has', async () => {
+    const item = LIBRARY[0];
+    useTasksStore.getState().addTask({
+      name: item.name,
+      category: item.category,
+      intervalDays: item.intervalDays,
+      libraryId: item.id,
+    });
+    await renderPicker();
+
+    // An already-added row stays visible so the catalog reads the same every
+    // time, but it must not be tickable into a duplicate.
+    expect(screen.getByLabelText(item.name).props.accessibilityState).toMatchObject({
+      checked: true,
+      disabled: true,
+    });
+  });
 });

@@ -122,4 +122,35 @@ describe('DueScreen', () => {
     );
     expect(screen.queryByRole('button', { name: 'Undo' })).toBeNull();
   });
+
+  it('marks a task done from its own circle, and only that task', async () => {
+    const store = useTasksStore.getState();
+    const gutters = store.addTask({ name: 'Clean gutters', category: 'exterior', intervalDays: 180 });
+    store.addTask({ name: 'Flush water heater', category: 'plumbing', intervalDays: 365 });
+    const user = userEvent.setup({ delay: 0 });
+    await renderDue();
+
+    await user.press(screen.getByRole('button', { name: 'Done: Clean gutters' }));
+
+    // Every row draws the same circle, so the row's own task id has to reach
+    // the handler — a shared-closure slip would tick the neighbour instead.
+    const live = useTasksStore.getState().completions.filter((c) => !c.deletedAt);
+    expect(live).toHaveLength(1);
+    expect(live[0].taskId).toBe(gutters);
+  });
+
+  it('opens the task a row names rather than completing it', async () => {
+    const id = useTasksStore
+      .getState()
+      .addTask({ name: 'Clean gutters', category: 'exterior', intervalDays: 180 });
+    const user = userEvent.setup({ delay: 0 });
+    await renderDue();
+
+    await user.press(screen.getByRole('button', { name: 'Clean gutters' }));
+
+    expect(navigation.navigate).toHaveBeenCalledWith('TaskEdit', { taskId: id });
+    // The circle and the row body sit side by side; reading the details must
+    // never be recorded as having done the work.
+    expect(useTasksStore.getState().completions).toHaveLength(0);
+  });
 });

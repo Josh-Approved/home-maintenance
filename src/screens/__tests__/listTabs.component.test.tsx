@@ -1,15 +1,21 @@
 /**
- * Component test — the two list tabs' add FABs (Uplevel-3 T3 action coverage):
- * Tasks → the starter library, Appliances → a blank appliance editor.
+ * Component test — the two list tabs' authored actions (Uplevel-3 T3 action
+ * coverage): the add FAB (Tasks → the starter library, Appliances → a blank
+ * appliance editor) and the list row that opens an existing item.
  *
- * Both tabs are covered in one file because the assertion is the same shape and
- * the setup (real stores, stubbed SQLite, stubbed pull-reveal animation) is
+ * Both tabs are covered in one file because the assertions are the same shape
+ * and the setup (real stores, stubbed SQLite, stubbed pull-reveal animation) is
  * identical — one file keeps the mock preamble from being copy-pasted twice.
  *
  * Each tab must offer exactly ONE add affordance. A second one is the defect
  * this guards against: it shipped on tend's People tab (an icon-only control in
  * the header alongside the FAB), and two buttons that both add the same thing
  * make a screen-reader user pick between synonyms.
+ *
+ * The row taps are asserted on the id they carry, not merely on "navigate was
+ * called": both tabs render every row from one renderItem, so a row that passed
+ * the wrong id — or none, opening a blank editor — would still look right and
+ * would quietly edit somebody else's record.
  */
 
 import React from 'react';
@@ -118,6 +124,18 @@ describe('Tasks tab', () => {
 
     expect(screen.getAllByRole('button', { name: 'Add task' })).toHaveLength(1);
   });
+
+  it('opens the task a row names, carrying that task id', async () => {
+    const store = useTasksStore.getState();
+    store.addTask({ name: 'Clean gutters', category: 'exterior', intervalDays: 180 });
+    const wanted = store.addTask({ name: 'Flush water heater', category: 'plumbing', intervalDays: 365 });
+    const user = userEvent.setup({ delay: 0 });
+    await renderTab(TasksScreen, 'Tasks');
+
+    await user.press(screen.getByRole('button', { name: 'Flush water heater' }));
+
+    expect(navigation.navigate).toHaveBeenCalledWith('TaskEdit', { taskId: wanted });
+  });
 });
 
 describe('Appliances tab', () => {
@@ -137,5 +155,17 @@ describe('Appliances tab', () => {
     await renderTab(AppliancesScreen, 'Appliances');
 
     expect(screen.getAllByRole('button', { name: 'Add appliance' })).toHaveLength(1);
+  });
+
+  it('opens the appliance a row names, carrying that appliance id', async () => {
+    const store = useAppliancesStore.getState();
+    store.addAppliance({ name: 'Furnace' });
+    const wanted = store.addAppliance({ name: 'Water heater' });
+    const user = userEvent.setup({ delay: 0 });
+    await renderTab(AppliancesScreen, 'Appliances');
+
+    await user.press(screen.getByRole('button', { name: 'Water heater' }));
+
+    expect(navigation.navigate).toHaveBeenCalledWith('ApplianceEdit', { applianceId: wanted });
   });
 });

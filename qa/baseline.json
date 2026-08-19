@@ -1,3 +1,5 @@
 {
-  "commits/fingerprint": "4d120220166f0793f8d705868f1ec7dc4962afaf"
+  "commits/fingerprint": "4d120220166f0793f8d705868f1ec7dc4962afaf",
+  "coverage/enforce": true,
+  "ux/enforce": true
 }
