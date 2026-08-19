@@ -100,6 +100,24 @@ describe('ReviewModal — Leave a review', () => {
     expect(await reviewOpenedFlag()).toBe(false);
   });
 
+  // "Not now" is the other half of the card, and the thing it must NOT do is
+  // opt the user out. Marking the install done here would retire the prompt on
+  // a soft no; opening a URL would be a betrayal of the button's own label.
+  it('dismisses on "Not now" without opening anything or retiring the prompt', async () => {
+    const openURL = jest
+      .spyOn(Linking, 'openURL')
+      .mockResolvedValue(undefined as never);
+    const onDismiss = jest.fn();
+    const user = userEvent.setup();
+
+    await render(<ReviewModal visible onDismiss={onDismiss} {...props} />);
+    await user.press(screen.getByRole('button', { name: 'Not now' }));
+
+    expect(openURL).not.toHaveBeenCalled();
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+    expect(await reviewOpenedFlag()).toBe(false);
+  });
+
   // Voice Control activates a control by its accessible NAME. If the name is a
   // longer sentence than the visible text, saying what is on screen matches
   // nothing — and in verb-final locales (de/ja) the visible word lands at the end

@@ -6,270 +6,300 @@
       "label": "Pressable (dynamic label)",
       "where": "src/components/AboutRow.tsx:56",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/AboutRow.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a tappable About row and asserts its action ran; a value-only row is not a button"
     },
     {
       "id": "components/Credits#common.back",
       "label": "common.back",
       "where": "src/components/Credits.tsx:45",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Credits.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses Back and asserts the screen hands control back"
     },
     {
       "id": "components/Credits#pressable-66",
       "label": "Pressable (dynamic label)",
       "where": "src/components/Credits.tsx:66",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Credits.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a credit row and asserts the generated entry URL is what opens"
     },
     {
       "id": "components/FundingFooter#about.feedback",
       "label": "about.feedback",
       "where": "src/components/FundingFooter.tsx:100",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/FundingFooter.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses Send feedback and asserts the feedback sheet opens"
     },
     {
       "id": "components/LanguageSetting#pressable-95",
       "label": "Pressable (dynamic label)",
       "where": "src/components/LanguageSetting.tsx:95",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LanguageSetting.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses the Settings row and asserts the language sheet opens"
     },
     {
       "id": "components/LanguageSetting#common.cancel",
       "label": "common.cancel",
       "where": "src/components/LanguageSetting.tsx:113",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LanguageSetting.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses the scrim and asserts the sheet closes with the language unchanged"
     },
     {
       "id": "components/LanguageSetting#pressable-114",
       "label": "Pressable (dynamic label)",
       "where": "src/components/LanguageSetting.tsx:114",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LanguageSetting.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses inside the sheet and asserts it does NOT fall through to the scrim"
     },
     {
       "id": "components/LanguageSetting#common.done",
       "label": "common.done",
       "where": "src/components/LanguageSetting.tsx:117",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LanguageSetting.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses Done and asserts the sheet closes with the language unchanged"
     },
     {
       "id": "components/LanguageSetting#pressable-135",
       "label": "Pressable (dynamic label)",
       "where": "src/components/LanguageSetting.tsx:135",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/LanguageSetting.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — picks Español and asserts the app is really in Spanish afterwards"
     },
     {
       "id": "components/MoreFromJA#pressable-58",
       "label": "Pressable (dynamic label)",
       "where": "src/components/MoreFromJA.tsx:58",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/MoreFromJA.component.test.tsx"
       },
-      "note": "Pressable · onPress · dynamic/child-text label"
+      "note": "Pressable · onPress · dynamic/child-text label — presses a cross-promo row and asserts the catalog store URL is what opens"
     },
     {
       "id": "components/ReviewModal#common.notnow",
       "label": "common.notNow",
       "where": "src/components/ReviewModal.tsx:162",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/ReviewModal.linkSafety.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses Not now and asserts nothing opens and the install is not retired"
     },
     {
       "id": "components/ScreenHeader#common.back",
       "label": "common.back",
       "where": "src/components/ScreenHeader.tsx:38",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/ScreenHeader.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses Back and asserts the handler ran (the canonical RNTL exemplar)"
     },
     {
       "id": "components/TipJarSheet#common.done",
       "label": "common.done",
       "where": "src/components/TipJarSheet.tsx:132",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/TipJarSheet.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — dismisses from the thank-you state; asserts Maybe later is gone once the tip landed"
     },
     {
       "id": "components/TipJarSheet#common.maybelater",
       "label": "common.maybeLater",
       "where": "src/components/TipJarSheet.tsx:198",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/TipJarSheet.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — dismisses the tip sheet without buying anything"
     },
     {
       "id": "screens/ApplianceEditScreen#appliances.save",
       "label": "appliances.save",
       "where": "src/screens/ApplianceEditScreen.tsx:116",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/ApplianceEditScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — saves a new appliance into the registry, edits the existing one in place, and refuses a nameless save"
     },
     {
       "id": "screens/ApplianceEditScreen#appliances.findmanual",
       "label": "appliances.findManual",
       "where": "src/screens/ApplianceEditScreen.tsx:167",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/ApplianceEditScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — asserts the manufacturer search URL carries this appliance brand and model"
     },
     {
       "id": "screens/ApplianceEditScreen#appliances.addlinkedtask",
       "label": "appliances.addLinkedTask",
       "where": "src/screens/ApplianceEditScreen.tsx:237",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/ApplianceEditScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — asserts the new task opens already linked to this appliance"
     },
     {
       "id": "screens/ApplianceEditScreen#appliances.delete",
       "label": "appliances.delete",
       "where": "src/screens/ApplianceEditScreen.tsx:247",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/ApplianceEditScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — asserts nothing is deleted before the confirm, and that linked tasks survive with the link cleared"
     },
     {
       "id": "screens/AppliancesScreen#appliances.add",
       "label": "appliances.add",
       "where": "src/screens/AppliancesScreen.tsx:125",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/tabAddFabs.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses the add FAB and asserts a blank appliance editor opens; exactly one add affordance on the tab"
     },
     {
       "id": "screens/DueScreen#due.emptynotaskscta",
       "label": "due.emptyNoTasksCta",
       "where": "src/screens/DueScreen.tsx:122",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/DueScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses the first-run call to action and asserts the starter library opens; absent once a schedule exists"
     },
     {
       "id": "screens/DueScreen#due.undo",
       "label": "due.undo",
       "where": "src/screens/DueScreen.tsx:185",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/DueScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — asserts Undo really removes the completion, not just the bar"
     },
     {
       "id": "screens/LibraryPickerScreen#tasks.custom",
       "label": "tasks.custom",
       "where": "src/screens/LibraryPickerScreen.tsx:93",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/LibraryPickerScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — asserts the blank editor REPLACES the picker so Back does not return to it"
     },
     {
       "id": "screens/LibraryPickerScreen#library.search",
       "label": "library.search",
       "where": "src/screens/LibraryPickerScreen.tsx:103",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/LibraryPickerScreen.component.test.tsx"
       },
-      "note": "TextInput · onSubmitEditing"
+      "note": "TextInput · onSubmitEditing — types a query and asserts the catalog narrows; a no-match query says so rather than going blank"
     },
     {
       "id": "screens/TaskEditScreen#edit.save",
       "label": "edit.save",
       "where": "src/screens/TaskEditScreen.tsx:156",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/TaskEditScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — saves a new task, edits the existing one in place, and refuses a nameless save"
     },
     {
       "id": "screens/TaskEditScreen#edit.reminder",
       "label": "edit.reminder",
       "where": "src/screens/TaskEditScreen.tsx:215",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/TaskEditScreen.component.test.tsx"
       },
-      "note": "Switch · onValueChange"
+      "note": "Switch · onValueChange — switching on goes through the permission adapter with the plan; a refusal snaps it back off; switching off never asks"
     },
     {
       "id": "screens/TaskEditScreen#edit.delete",
       "label": "edit.delete",
       "where": "src/screens/TaskEditScreen.tsx:259",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/TaskEditScreen.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — asserts nothing is deleted before the confirm; no Delete at all while the task is still being created"
     },
     {
       "id": "screens/TasksScreen#tasks.add",
       "label": "tasks.add",
       "where": "src/screens/TasksScreen.tsx:143",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/screens/__tests__/tabAddFabs.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — presses the add FAB and asserts the starter library opens; exactly one add affordance on the tab"
     },
     {
       "id": "components/ApplianceSheet#edit.appliancenew",
       "label": "edit.applianceNew",
       "where": "src/components/ApplianceSheet.tsx:84",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/ApplianceSheet.component.test.tsx"
       },
-      "note": "TextInput · onSubmitEditing"
+      "note": "TextInput · onSubmitEditing — types a name into the new-appliance field; also asserts a library hint pre-fills it"
     },
     {
       "id": "components/ApplianceSheet#edit.appliancecreate",
       "label": "edit.applianceCreate",
       "where": "src/components/ApplianceSheet.tsx:94",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/ApplianceSheet.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — creates the appliance and asserts the task is linked to the id just created; a blank name creates nothing"
     },
     {
       "id": "components/Dialogs#common.closemenu",
       "label": "common.closeMenu",
       "where": "src/components/Dialogs.tsx:110",
       "proof": {
-        "kind": "none"
+        "kind": "rntl",
+        "ref": "src/components/__tests__/Dialogs.component.test.tsx"
       },
-      "note": "Pressable · onPress"
+      "note": "Pressable · onPress — the scrim closes the action menu without firing any option"
     },
     {
       "id": "components/Dialogs#pressable-116",
