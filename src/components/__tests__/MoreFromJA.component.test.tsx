@@ -2,10 +2,11 @@
  * Component test — the "More from Josh Approved" cross-promo row.
  *
  * Canon allows this row as the one exception to "No ads, ever" strictly because
- * it is plain text pointing at a listing that is genuinely live. Two rules
- * follow, and both are asserted here: a row opens the real catalog URL, and no
- * row is drawn at all for an app with no listing on this platform. A dead row
- * would break the exception it depends on.
+ * it is plain text pointing at an app that is genuinely live. Two rules follow,
+ * and both are asserted here: a row opens that app's page on joshapproved.com
+ * with ?install=1 (which forwards a phone to the right store), and no row is
+ * drawn at all for an app with no listing on this platform. A row pointing at a
+ * page whose store button does not exist would break the exception it depends on.
  */
 
 import React from 'react';
@@ -22,16 +23,16 @@ jest.mock('@react-native-async-storage/async-storage', () =>
 );
 
 import { MoreFromJA } from '../MoreFromJA';
-import { JA_CATALOG } from '../jaCatalog';
+import { JA_CATALOG, installUrl } from '../jaCatalog';
 
 // The catalog is the shared source of truth and apps go live over time, so the
 // test derives its expectations from it instead of hardcoding a sibling app.
-const liveOnIos = JA_CATALOG.filter((a) => a.iosUrl && a.slug !== 'home-maintenance');
+const liveOnIos = JA_CATALOG.filter((a) => a.iosLive && a.slug !== 'home-maintenance');
 
 describe('MoreFromJA', () => {
   beforeEach(() => jest.restoreAllMocks());
 
-  it('opens the store listing for the app you tap', async () => {
+  it('opens the app\'s page on the site for the app you tap', async () => {
     // Nothing to assert if no sibling is listed on iOS yet — the row is
     // correctly absent, which the next case covers.
     if (!liveOnIos.length) return;
@@ -42,7 +43,7 @@ describe('MoreFromJA', () => {
     await render(<MoreFromJA excludeSlug="home-maintenance" />);
     await user.press(screen.getByRole('button', { name: `${app.name} — ${app.blurb}` }));
 
-    expect(openURL).toHaveBeenCalledWith(app.iosUrl);
+    expect(openURL).toHaveBeenCalledWith(installUrl(app));
   });
 
   it('never lists the host app back to itself', async () => {
@@ -61,7 +62,7 @@ describe('MoreFromJA', () => {
     const original = Platform.OS;
     Object.defineProperty(Platform, 'OS', { value: 'android', configurable: true });
     try {
-      const liveOnAndroid = JA_CATALOG.filter((a) => a.androidUrl && a.slug !== 'home-maintenance');
+      const liveOnAndroid = JA_CATALOG.filter((a) => a.androidLive && a.slug !== 'home-maintenance');
       await render(<MoreFromJA excludeSlug="home-maintenance" />);
 
       expect(screen.queryAllByRole('button')).toHaveLength(liveOnAndroid.length);
