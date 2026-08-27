@@ -176,5 +176,49 @@
       { "waitFor": "@add-task-fab", "timeout": 10000 },
       { "assert": "@added-task" }
     ]
+  },
+  "upgrade": {
+    "$comment": "T5 upgrade harness — cross-version subflow (compiles to qa/flows/upgrade-write.yaml + upgrade-assert.yaml; run by scripts/qa/upgrade-test.mjs against qa/released/<platform>, full profile + nightly, NOT per-PR). The bug class: install a HEAD build over months-old data and silently lose it. 'write' runs on the LAST-RELEASED binary, the harness installs HEAD OVER it (never uninstall), and 'assert' proves the data is still there. Neither flow may clear state — persistence across the install is the whole point (upgradeJourneys forces clearState:false). THE ONE THING TO KNOW ABOUT THIS APP: its QA fixtures are IN MEMORY ONLY. Both stores seed with `if (QA_MODE && loaded.length === 0)` and never write the fixtures back (src/store/tasks.ts, src/store/appliances.ts), so once the write flow puts ANY row on disk the seed stops firing and every fixture row is gone on the next boot — asserting a raw fixture after the upgrade would fail 100% of the time and prove nothing about migration. So the write flow makes a SEEDED task genuinely durable first: it opens the seeded 'Replace HVAC filter' task and saves it unchanged, which runs updateTask -> saveTask and lands that fixture row in the SQLite `tasks` table exactly as a released build wrote it. (packing-list has the same memory-only seed and gets this for free because its write mutates the seeded trip, which persists the whole trip; here the units are separate rows, so the persist has to be its own step.) THEN it writes the datum that is not in the seed: add 'Test sump pump' from the starter library — the app's canonical create action, already device-certified in the main journey and the T4 survival flow — and take the setup step's one-tap 'Add & link', which CREATES the appliance 'Sump pump'. That single pass leaves durable rows in TWO of the three domain tables (tasks + appliances), so the assert covers both. The assert re-reads all of it on HEAD: the seeded task, the written task, and the written appliance. If HEAD reads the persisted store differently than the released build wrote it, at least one of the three is gone. Deliberately NOT asserted: the seeded appliances (Refrigerator/Furnace/Garage door opener) and the seeded completions, which are fixtures the released build never wrote to disk — the appliances store reseeds them on the HEAD boot only until the write flow's 'Sump pump' row exists, after which they are legitimately absent. No 'pressure' oracle here: that is Android-only and needs a device to author honestly.",
+    "write": {
+      "steps": [
+        { "waitFor": "@due-title", "timeout": 30000 },
+        { "tap": "@tasks-tab" },
+        { "waitFor": "@add-task-fab", "timeout": 15000 },
+        { "assert": "@overdue-task" },
+        { "assertNot": "@added-task" },
+
+        { "tap": "@overdue-task" },
+        { "waitFor": "@edit-title", "timeout": 15000 },
+        { "tap": "@edit-save" },
+        { "waitFor": "@add-task-fab", "timeout": 15000 },
+        { "assert": "@overdue-task" },
+
+        { "tap": "@add-task-fab" },
+        { "waitFor": "@library-title", "timeout": 15000 },
+        { "scrollUntilVisible": "@library-sump" },
+        { "tap": "@library-sump" },
+        { "tap": "@library-add-one" },
+        { "waitFor": "@setup-title", "timeout": 15000 },
+        { "assertNot": "@setup-linked-sump" },
+        { "tap": "@setup-link-sump" },
+        { "assert": "@setup-linked-sump" },
+        { "tap": "@setup-done" },
+        { "waitFor": "@add-task-fab", "timeout": 15000 },
+        { "assert": "@added-task" },
+        { "wait": 3000 }
+      ]
+    },
+    "assert": {
+      "steps": [
+        { "waitFor": "@due-title", "timeout": 30000 },
+        { "tap": "@tasks-tab" },
+        { "waitFor": "@add-task-fab", "timeout": 15000 },
+        { "assert": "@overdue-task" },
+        { "assert": "@added-task" },
+        { "tap": "@appliances-tab" },
+        { "waitFor": "@appliance-sump", "timeout": 15000 },
+        { "assert": "@appliance-sump" }
+      ]
+    }
   }
 }

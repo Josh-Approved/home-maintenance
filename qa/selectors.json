@@ -77,6 +77,14 @@
       "text": ".*Test sump pump.*",
       "note": "the added task on the Tasks list. assertNot before / assert after = the library add landed."
     },
+    "edit-title": {
+      "text": "Edit task",
+      "note": "TaskEdit header title for an EXISTING task (i18n edit.titleEdit; the new-task variant reads 'New task'). Proves the editor opened on the row we tapped — used by the T5 upgrade write flow."
+    },
+    "edit-save": {
+      "text": "Save",
+      "note": "the task editor's header save check a11y label (i18n edit.save). Same literal as @lastdone-save on purpose — they are the same string on two different surfaces, and only one is ever on screen (the hub sets accessibilityElementsHidden while a sheet is up). Kept as its own anchor so a failure names the surface."
+    },
     "appliances-tab": {
       "testID": "tab-appliances",
       "note": "bottom tab button \u2014 testID because the Tasks screen shows an 'Appliances' category section header"
@@ -84,6 +92,10 @@
     "appliance-fridge": {
       "text": ".*Refrigerator.*",
       "note": "seeded appliance row (fixtures: LG LFXS26973S)"
+    },
+    "appliance-sump": {
+      "text": ".*Sump pump.*",
+      "note": "the appliance the setup step's one-tap 'Add & link' CREATES (library hint sump-pump-test.appliance). Unlike the seeded appliances it is a real row in the appliances table, so the T5 upgrade assert uses it to prove the SECOND domain table survived the install-over, not just tasks."
     },
     "find-manual": {
       "text": "Find manual",
