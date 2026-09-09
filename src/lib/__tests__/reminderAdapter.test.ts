@@ -19,6 +19,17 @@ jest.mock('../reminderScheduler', () => ({
   syncReminders: jest.fn(),
 }));
 
+// QA_MODE is a compile-time constant read from EXPO_PUBLIC_QA_MODE, and
+// optInToReminders short-circuits under it (a capture run must never raise an
+// OS dialog over a screenshot). That makes the permission-ask contract below
+// depend on ambient environment unless it is pinned: the nightly's macOS job
+// set EXPO_PUBLIC_QA_MODE=1 for its device half, the JS suites inherited it,
+// and the two opt-in tests failed every night against correct product code
+// (home-maintenance-20260908-1 / -2). The workflow no longer leaks the flag;
+// this pin is the belt to that braces, so a stray export in any shell can never
+// silently turn this trust core into an assertion about capture mode.
+jest.mock('../../qa/qaMode', () => ({ QA_MODE: false }));
+
 import { reminderItems, reminderCopy, optInToReminders } from '../reminderAdapter';
 import { ensureNotificationPermission } from '../reminderScheduler';
 import {

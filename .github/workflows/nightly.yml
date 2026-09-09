@@ -141,10 +141,25 @@ jobs:
       # Capped so a slow suite yields to the device half rather than eating it
       # (see the job-level note). continue-on-error means the cap ends the STEP,
       # never the job.
+      #
+      # EVERY JS STEP BELOW MUST PIN EXPO_PUBLIC_QA_MODE: '0'. The job-level env
+      # sets it to '1' for the DEVICE half — that flag is what makes the capture
+      # build boot deterministic fixtures — but it is job-scoped, so the JS suites
+      # inherited it too and ran the unit tests in capture mode. QA_MODE is a
+      # real branch in app code (src/qa/qaMode.ts; AppShell, the stores, the
+      # reminder adapter/scheduler all short-circuit under it), so the trust core
+      # was asserting against capture behaviour, not product behaviour. That
+      # filed two phantom product defects a night against reminderAdapter's
+      # permission-ask contract (home-maintenance-20260908-1 / -2, 2026-09-06
+      # onward) — the tests were right and the code was right; only the
+      # environment was wrong. Overriding at step level (rather than moving the
+      # job-level env down onto the device steps) keeps the device half
+      # byte-for-byte unchanged.
       - name: Deep jest — intent-fuzz (nightly 2000) + regression replay + trust core
         continue-on-error: true
         timeout-minutes: 20
         env:
+          EXPO_PUBLIC_QA_MODE: '0'
           FUZZ_PROFILE: nightly
           JEST_JUNIT_OUTPUT_DIR: test-results
           JEST_JUNIT_OUTPUT_NAME: jest-nightly-ios.xml
@@ -168,6 +183,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: 10
         env:
+          EXPO_PUBLIC_QA_MODE: '0'
           QUARANTINE_MODE: run
         run: npx jest --ci --passWithNoTests || true
 
@@ -181,6 +197,8 @@ jobs:
       - name: Stryker incremental (mutation)
         continue-on-error: true
         timeout-minutes: 30
+        env:
+          EXPO_PUBLIC_QA_MODE: '0'
         run: |
           if [ -f stryker.config.json ]; then
             npx stryker run --incremental || true
