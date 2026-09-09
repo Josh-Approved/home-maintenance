@@ -144,17 +144,16 @@ jobs:
       #
       # EVERY JS STEP BELOW MUST PIN EXPO_PUBLIC_QA_MODE: '0'. The job-level env
       # sets it to '1' for the DEVICE half — that flag is what makes the capture
-      # build boot deterministic fixtures — but it is job-scoped, so the JS suites
-      # inherited it too and ran the unit tests in capture mode. QA_MODE is a
-      # real branch in app code (src/qa/qaMode.ts; AppShell, the stores, the
-      # reminder adapter/scheduler all short-circuit under it), so the trust core
-      # was asserting against capture behaviour, not product behaviour. That
-      # filed two phantom product defects a night against reminderAdapter's
-      # permission-ask contract (home-maintenance-20260908-1 / -2, 2026-09-06
-      # onward) — the tests were right and the code was right; only the
-      # environment was wrong. Overriding at step level (rather than moving the
-      # job-level env down onto the device steps) keeps the device half
-      # byte-for-byte unchanged.
+      # build boot deterministic fixtures — but env at job level is inherited by
+      # every step, so the JS suites were running the unit tests in capture mode.
+      # QA_MODE is a REAL BRANCH in app code (src/qa/qaMode.ts; the shell, the
+      # stores and the reminder adapter all short-circuit under it), so the trust
+      # core was asserting against capture behaviour instead of product
+      # behaviour — and the defect-reporter filed the difference as a product
+      # defect every single night (home-maintenance-20260908-1 / -2: the
+      # permission-ask contract, where the tests and the code were both correct
+      # and only the environment was wrong). Pin it at STEP level rather than
+      # moving the job-level env down, so the device half stays untouched.
       - name: Deep jest — intent-fuzz (nightly 2000) + regression replay + trust core
         continue-on-error: true
         timeout-minutes: 20
