@@ -124,7 +124,7 @@
     {
       "id": "components/TipJarSheet#common.done",
       "label": "common.done",
-      "where": "src/components/TipJarSheet.tsx:132",
+      "where": "src/components/TipJarSheet.tsx:112",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/TipJarSheet.component.test.tsx"
@@ -134,7 +134,7 @@
     {
       "id": "components/TipJarSheet#common.maybelater",
       "label": "common.maybeLater",
-      "where": "src/components/TipJarSheet.tsx:198",
+      "where": "src/components/TipJarSheet.tsx:178",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/TipJarSheet.component.test.tsx"
@@ -294,7 +294,7 @@
     {
       "id": "components/Dialogs#common.closemenu",
       "label": "common.closeMenu",
-      "where": "src/components/Dialogs.tsx:110",
+      "where": "src/components/Dialogs.tsx:81",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -304,7 +304,7 @@
     {
       "id": "components/Dialogs#pressable-e.stoppropagation",
       "label": "Pressable (dynamic label)",
-      "where": "src/components/Dialogs.tsx:116",
+      "where": "src/components/Dialogs.tsx:87",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -314,7 +314,7 @@
     {
       "id": "components/Dialogs#pressable-choose",
       "label": "Pressable (dynamic label)",
-      "where": "src/components/Dialogs.tsx:123",
+      "where": "src/components/Dialogs.tsx:94",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -324,7 +324,7 @@
     {
       "id": "components/Dialogs#common.cancel",
       "label": "common.cancel",
-      "where": "src/components/Dialogs.tsx:135",
+      "where": "src/components/Dialogs.tsx:106",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -334,7 +334,7 @@
     {
       "id": "components/Dialogs#common.cancel-2",
       "label": "common.cancel",
-      "where": "src/components/Dialogs.tsx:212",
+      "where": "src/components/Dialogs.tsx:163",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -344,7 +344,7 @@
     {
       "id": "components/Dialogs#pressable-e.stoppropagation-2",
       "label": "Pressable (dynamic label)",
-      "where": "src/components/Dialogs.tsx:218",
+      "where": "src/components/Dialogs.tsx:169",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -354,7 +354,7 @@
     {
       "id": "components/Dialogs#textinput-submit",
       "label": "TextInput (dynamic label)",
-      "where": "src/components/Dialogs.tsx:223",
+      "where": "src/components/Dialogs.tsx:174",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -364,7 +364,7 @@
     {
       "id": "components/Dialogs#common.cancel-3",
       "label": "common.cancel",
-      "where": "src/components/Dialogs.tsx:238",
+      "where": "src/components/Dialogs.tsx:189",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -374,7 +374,7 @@
     {
       "id": "components/Dialogs#pressable-submit",
       "label": "Pressable (dynamic label)",
-      "where": "src/components/Dialogs.tsx:246",
+      "where": "src/components/Dialogs.tsx:197",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -384,7 +384,7 @@
     {
       "id": "components/Dialogs#common.cancel-4",
       "label": "common.cancel",
-      "where": "src/components/Dialogs.tsx:311",
+      "where": "src/components/Dialogs.tsx:250",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -394,7 +394,7 @@
     {
       "id": "components/Dialogs#pressable-e.stoppropagation-3",
       "label": "Pressable (dynamic label)",
-      "where": "src/components/Dialogs.tsx:317",
+      "where": "src/components/Dialogs.tsx:256",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -404,7 +404,7 @@
     {
       "id": "components/Dialogs#common.cancel-5",
       "label": "common.cancel",
-      "where": "src/components/Dialogs.tsx:323",
+      "where": "src/components/Dialogs.tsx:262",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -414,7 +414,7 @@
     {
       "id": "components/Dialogs#pressable-confirm",
       "label": "Pressable (dynamic label)",
-      "where": "src/components/Dialogs.tsx:331",
+      "where": "src/components/Dialogs.tsx:270",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/Dialogs.component.test.tsx"
@@ -594,7 +594,7 @@
     {
       "id": "components/TipJarSheet#pressable-ontip",
       "label": "Pressable (dynamic label)",
-      "where": "src/components/TipJarSheet.tsx:166",
+      "where": "src/components/TipJarSheet.tsx:146",
       "proof": {
         "kind": "rntl",
         "ref": "src/components/__tests__/TipJarSheet.component.test.tsx"
