@@ -30,6 +30,7 @@
     "plugins": [
       "./plugins/withGradleJvmArgs",
       "./plugins/withAndroidLocaleConfig",
+      "./plugins/withFabricFindNodeRaceFix",
       "expo-sqlite",
       "expo-sharing",
       "expo-splash-screen",
