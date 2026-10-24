@@ -96,11 +96,13 @@ export default function SettingsScreen({ navigation }: Props) {
         <LanguageSetting />
 
         <Text style={s.sectionLabel}>{t('settings.reminders')}</Text>
-        <DrilldownRow
-          label={t('settings.notifyTime')}
-          value={hourText(notifyHour)}
-          onPress={() => setNotifyOpen(true)}
-        />
+        <View style={s.drilldownRow}>
+          <DrilldownRow
+            label={t('settings.notifyTime')}
+            value={hourText(notifyHour)}
+            onPress={() => setNotifyOpen(true)}
+          />
+        </View>
 
         <Text style={s.sectionLabel}>{t('settings.yourData')}</Text>
         <AboutRow label={t('settings.export')} icon={Upload} onPress={onExport} />
@@ -149,6 +151,9 @@ function makeStyles(c: Colors) {
       paddingTop: space.s7,
       paddingBottom: space.s3,
     },
+    // DrilldownRow brings no horizontal padding of its own, so it takes the
+    // surrounding rows' gutter here (it rendered at x = 0 without it).
+    drilldownRow: { paddingHorizontal: space.s6 },
     status: {
       ...ty.sm,
       fontFamily: fontFamily.sans,
